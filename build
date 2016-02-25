@@ -2,7 +2,7 @@
 
 set -e
 
-docker build -t windows-installer -f Dockerfile.windows .
+docker build -t windows-installer -f Dockerfile .
 CONTAINER="$(docker create -t -v $(pwd)/images:/images -v /var/run/docker.sock:/var/run/docker.sock windows-installer)"
 docker start -i $CONTAINER
 mkdir -p dist/

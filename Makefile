@@ -1,22 +1,16 @@
-.PHONY: docs osx windows
+.PHONY: docs windows clean clean-windows
 
-default: osx windows
+default: windows
 	@true
 
-clean: clean-osx clean-windows
+clean: lean-windows
 	@true
-
-osx: clean-osx
-	./script/build-osx
 
 windows: clean-windows
-	./script/build-windows
-
-clean-osx:
-	rm -f dist/DockerToolbox-*.pkg
+	./build
 
 clean-windows:
-	rm -f dist/DockerToolbox-*.exe
+	rm -f dist/SageMath*
 
 docs:
 	$(MAKE) -C docs docs
