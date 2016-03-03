@@ -7,7 +7,7 @@ clean: lean-windows
 	@true
 
 windows: clean-windows
-	./build
+	./build $(DOCKER_BUILD_FLAGS) $(INNO_FLAGS)
 
 clean-windows:
 	rm -f dist/SageMath*

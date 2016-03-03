@@ -2,7 +2,10 @@
 
 set -e
 
-docker build -t windows-installer -f Dockerfile .
+# Additional flags to pass to docker build
+DOCKER_BUILD_FLAGS=$@
+
+docker build -t windows-installer -f Dockerfile ${DOCKER_BUILD_FLAGS} .
 CONTAINER="$(docker create -t -v $(pwd)/images:/images -v /var/run/docker.sock:/var/run/docker.sock windows-installer)"
 docker start -i $CONTAINER
 mkdir -p dist/

@@ -12,6 +12,20 @@
 #define virtualBoxCommon "..\bundle\common.cab"
 #define virtualBoxMsi "..\bundle\VirtualBox_amd64.msi"
 
+#ifndef Compression
+  #define Compression "lzma"
+#endif
+
+// NOTE: Enable DiskSpanning if the bundled Docker image is so large that
+// the install file becomes >2GB compressed.
+#ifndef DiskSpanning
+  #if Compression == "none"
+    #define DiskSpanning="yes"
+  #else
+    #define DiskSpanning="no"
+  #endif
+#endif
+
 [Setup]
 AppCopyright={#MyAppPublisher}
 AppId={{723D6855-C02C-42AE-92E7-8DFEDA411195}
@@ -29,9 +43,9 @@ DefaultDirName={pf}\{#SageGroupName}
 DefaultGroupName={#SageGroupName}
 DisableProgramGroupPage=yes
 DisableWelcomePage=no
-DiskSpanning=yes
+DiskSpanning={#DiskSpanning}
 OutputBaseFilename={#SageGroupName}
-Compression=lzma
+Compression={#Compression}
 SolidCompression=yes
 WizardImageFile=windows-installer-side.bmp
 WizardSmallImageFile=windows-installer-logo.bmp

@@ -2,7 +2,7 @@
 docker pull ${SAGE_IMAGE_FULL}
 
 SAGE_IMAGE_DIGEST="$(docker images -q ${SAGE_IMAGE_FULL})"
-SAGE_IMAGE_PATH="/images/${SAGE_IMAGE_NAME}-${SAGE_IMAGE_DIGEST}.tar"
+SAGE_IMAGE_PATH="/images/$(echo ${SAGE_IMAGE_REPO} | sed 's/\//-/')-${SAGE_IMAGE_DIGEST}.tar"
 
 if [ ! -f "${SAGE_IMAGE_PATH}" ]; then
   # This step, if we get to it, can be rather time consuming. Provide a
@@ -16,6 +16,12 @@ fi
 # to pick up
 ln -s "${SAGE_IMAGE_PATH}" /bundle/sagemath.tar
 
-wine ../innosetup/ISCC.exe Toolbox.iss /DMyAppVersion=$INSTALLER_VERSION 
+INNO_SETUP="ISCC.exe Toolbox.iss /DMyAppVersion=$INSTALLER_VERSION ${INNO_FLAGS}"
+
+
+echo "Running InnoSetup:"
+echo "${INNO_SETUP}"
+
+wine ../innosetup/${INNO_SETUP}
 
 exit $?
