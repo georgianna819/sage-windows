@@ -1,10 +1,8 @@
-﻿#requires -Version 3
+﻿#requires -Version 2
 <#
         .Synopsis
         Gets docker ready to use
 #>
-[CmdletBinding()]
-[Alias()]
 Param
 (
     # Name of the VM to use
@@ -32,13 +30,13 @@ if (-not (Test-Path $dm) -or -not (Test-Path $vbm))
     throw 'Either VirtualBox or Docker Machine are not installed. Please re-run the Toolbox Installer and try again.'
 }
 
-& $vbm showvminfo $vm *> $null
+& $vbm showvminfo $vm > $null 2>&1
 $vmExistsCode = $LASTEXITCODE
 
 if ($vmExistsCode -ne 0)
 {
     Write-Host -Object "Creating Machine $vm..."
-    & $dm rm -f $vm *> $null
+    & $dm rm -f $vm > $null 2>&1
     Remove-Item -Force -Recurse -Path "~/.docker/machine/machines/$vm" -ErrorAction SilentlyContinue
     & $dm create -d virtualbox $vm
 }
