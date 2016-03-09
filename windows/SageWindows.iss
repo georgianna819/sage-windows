@@ -82,19 +82,24 @@ Filename: "{win}\explorer.exe"; Parameters: "{userprograms}\{#SageGroupName}\"; 
 //Name: upgradevm; Description: "Upgrade Boot2Docker VM"
 
 [Components]
-Name: "Docker"; Description: "Docker for Windows" ; Types: full custom; Flags: fixed
+Name: "Docker"; Description: "Docker for Windows" ; Types: full custom; Flags: fixed disablenouninstallwarning
 Name: "SageMath"; Description: "SageMath image for Docker"; Types: full custom; Flags: fixed
 
 [Files]
 Source: "{#dockerToolbox}"; DestDir: "{tmp}"; Flags: ignoreversion deleteafterinstall; Components: "Docker"; AfterInstall: RunInstallDocker
-Source: "{#sageMathImage}"; Components: "SageMath"; Flags: dontcopy
 // NOTE: This file has more to do with Docker than sage itself.  It's the
 // equivalent to start.sh which comes with Docker Toolbox, but written
 // for MS powershell, so that we don't strictly need to install Git
 // Eventually we could avoid shipping this if Docker Toolbox starts
 // including it; see https://github.com/docker/toolbox/pull/321 
 Source: ".\resources\sagemath.ico"; DestDir: "{app}"; Flags: ignoreversion; Components: "SageMath"
-Source: ".\Start-DockerMachine.ps1"; DestDir: "{app}"; Flags: ignoreversion; Components: "SageMath"
+Source: ".\lib\Start-DockerMachine.ps1"; DestDir: "{app}"; Flags: ignoreversion; Components: "SageMath"
+Source: ".\lib\Test-PortConnection.ps1"; DestDir: "{app}"; Flags: ignoreversion; Components: "SageMath"
+Source: ".\Start-SageMath.ps1"; DestDir: "{app}"; Flags: ignoreversion; Components: "SageMath"
+Source: "{#sageMathImage}"; DestDir: "{tmp}"; Flags: ignoreversion; Components: "SageMath"; BeforeInstall: InitializeDockerMachine; AfterInstall: LoadSageImage
+
+[Icons]
+Name: "{commondesktop}\Launch SageMath Notebook"; WorkingDir: "{app}"; Filename: "{sys}\WindowsPowerShell\v1.0\powershell.exe"; Parameters: "-ExecutionPolicy Unrestricted -Command Start-SageMath.ps1"; IconFilename: "{app}\sagemath.ico"; Components: SageMath
 
 [Code]
 #include "base64.iss"
@@ -546,6 +551,22 @@ begin
 end;
 
 
+// This step starts the boot2docker VM with docker-machine
+// so that we can then issue commands to the docker-engine through
+// the docker client (namely load the sagemath image, which we then delete
+// from the installation)
+procedure InitializeDockerMachine();
+begin
+  TrackEvent('Installing the Sage image');
+
+  if not IsDockerMachineCreated() then
+    CreateDockerMachine();
+
+  if not IsDockerMachineRunning() then
+    StartDockerMachine();
+end;
+
+
 procedure LoadSageImage();
 var
   ResultCode: Integer;
@@ -569,28 +590,6 @@ begin
 end;
 
 
-// This step starts the boot2docker VM with docker-machine
-// so that we can then issue commands to the docker-engine through
-// the docker client (namely load the sagemath image, which we then delete
-// from the installation)
-procedure RunInstallSageImage();
-begin
-  TrackEvent('Installing the Sage image');
-  // TODO Maybe worth specifying a constant for this
-  WizardForm.StatusLabel.Caption := 'Extracting Sage image archive...';
-  ExtractTemporaryFile('sagemath.tar');
-  WizardForm.StatusLabel.Caption := 'Extracting Sage image archive... [OK]';
-
-  if not IsDockerMachineCreated() then
-    CreateDockerMachine();
-
-  if not IsDockerMachineRunning() then
-    StartDockerMachine();
-
-  LoadSageImage();
-end;
-
-
 procedure CurStepChanged(CurStep: TSetupStep);
 var
   Success: Boolean;
@@ -601,8 +600,6 @@ begin
     TrackEvent('Installing Files Succeeded');
     if IsTaskSelected(ModPathName) then
       ModPath();
-
-    RunInstallSageImage();
 
     if Success then
       TrackEvent('Installer Finished');
