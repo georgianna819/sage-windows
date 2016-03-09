@@ -14,29 +14,39 @@ else {
 }
 
 $docker = Join-Path -Path $env:DOCKER_TOOLBOX_INSTALL_PATH -ChildPath 'docker.exe'
+$machine = Join-Path -Path $env:DOCKER_TOOLBOX_INSTALL_PATH -ChildPath 'docker-machine.exe'
 
 # Source Start-DockerMachine to ensure Docker VM is running and environment
 # variables needed by the docker command to communicate with its host are set
 . lib\Start-DockerMachine.ps1
 . lib\Test-PortConnection.ps1
 
-
+# Annoyingly, boot2docker currently tends to mount the /C/Users under
+# "/c/Users", and when we set up volume mounting it is case-sensitive
+# so just to make sure both cases exist we create a symlink if necessary
+& $machine ssh $vmname '[ ! -d /C ] && sudo ln -sf /c /C'
 
 # Set up the VM port forwarding
-& $vbm controlvm "$vmname" natpf1 "sagemath,tcp,,$port,,$port"
+# Silence errors that occur if the port map is already configured
+& $vbm controlvm "$vmname" natpf1 "sagemath,tcp,,$port,,$port" > $null 2>&1
 
-& $docker run -d -p "${port}:${port}" --name $container $image
+$mount = "/" + ($env:USERPROFILE -Replace '\\','/' -Replace ':','') + ":/home/sage"
+& $docker run -d -p "${port}:${port}" -v "$mount" --name $container $image
 
 # Wait to make sure the server connection is up
+$dmip = (& $dm ip $vmname | Out-String).Trim()
+
 Write-Host -NoNewline "Testing web server connection..."
 do {
-    $res = Test-PortConnection -TargetHost "localhost" -TargetPort $port -Timeout $timeout
+    $res = Test-PortConnection -TargetHost $dmip -TargetPort $port -Timeout $timeout
     if($res.ConnectionStatus -eq "Success") {
         break
     }
     Write-Host ""
-    Write-Host -NoNewLine "Retrying..."
     $retries -= 1
+    if($retries -gt 0) {
+        Write-Host -NoNewLine "Retrying..."
+    }
 } while($retries -gt 0)
 
 if($retries -eq 0) {
