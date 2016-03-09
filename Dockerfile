@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -yq apt-transport-https
 RUN apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
 RUN echo "deb https://apt.dockerproject.org/repo debian-jessie main" > /etc/apt/sources.list.d/docker.list
 
-RUN apt-get update && apt-get install -yq wine curl unrar unzip bzip2 docker-engine
+RUN apt-get update && apt-get install -yq wine curl unrar unzip bzip2 docker-engine imagemagick
 
 # innosetup
 RUN mkdir innosetup && \
@@ -43,6 +43,20 @@ RUN curl -fsSL -o DockerToolbox.exe "https://github.com/docker/toolbox/releases/
 
 # Add installer resources
 COPY windows /installer
+
+# Make the icons
+WORKDIR /installer/resources
+
+# For some reason no matter what I do going straight from SVG to ICO
+# doesn't work with ImageMagick (I may be that transparency doesn't really
+# make sense for ICO files since they are just containers for multiple
+# images...) so we go to PNG first
+RUN    for svg in *.svg; do \
+            convert -background none -resize 256x256 $svg ${svg%.svg}.png \
+         && convert ${svg%.svg}.png -define icon:auto-resize="256,48,32,16" ${svg%.svg}.ico; \
+            done \
+    && convert -resize 164x314 sage-banner.svg sage-banner.bmp \
+    && convert -resize 55x55 sage-sticker.svg sage-sticker.bmp
 
 WORKDIR /installer
 RUN rm -rf /tmp/.wine-0/

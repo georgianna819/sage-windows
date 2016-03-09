@@ -58,11 +58,11 @@ DiskSpanning={#DiskSpanning}
 OutputBaseFilename={#SageGroupName}
 Compression={#Compression}
 SolidCompression=yes
-WizardImageFile=windows-installer-side.bmp
-WizardSmallImageFile=windows-installer-logo.bmp
+WizardImageFile=resources\sage-banner.bmp
+WizardSmallImageFile=resources\sage-sticker.bmp
 WizardImageStretch=yes
 UninstallDisplayIcon={app}\unins000.exe
-SetupIconFile=toolbox.ico
+SetupIconFile=resources\sage-floppy-disk.ico
 ChangesEnvironment=true
 SetupLogging=yes
 
@@ -93,6 +93,7 @@ Source: "{#sageMathImage}"; Components: "SageMath"; Flags: dontcopy
 // for MS powershell, so that we don't strictly need to install Git
 // Eventually we could avoid shipping this if Docker Toolbox starts
 // including it; see https://github.com/docker/toolbox/pull/321 
+Source: ".\resources\sagemath.ico"; DestDir: "{app}"; Flags: ignoreversion; Components: "SageMath"
 Source: ".\Start-DockerMachine.ps1"; DestDir: "{app}"; Flags: ignoreversion; Components: "SageMath"
 
 [Code]
