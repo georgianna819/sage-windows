@@ -1,4 +1,9 @@
 # TODO: Don't hard-code "default", port #s, etc.
+[CmdletBinding()]
+Param(
+    [switch]$OpenBrowser = $false
+)
+
 $vmname = "default"
 $image = "sagemath/sagemath-jupyter"
 $container = "sagemath-windows"
@@ -58,4 +63,6 @@ if($retries -eq 0) {
 }
 
 # This should launch the default web browser
-& explorer.exe http://localhost:$port
+if($OpenBrowser) {
+    & explorer.exe http://localhost:$port
+}
