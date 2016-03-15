@@ -113,6 +113,8 @@ const
 var
   TrackingDisabled: Boolean;
 //  TrackingCheckBox: TNewCheckBox;
+  // Used for error processing
+  CancelWithoutPrompt: Boolean;
 
 function uuid(): String;
 var
@@ -238,13 +240,32 @@ begin
 end;
 
 
+// This is used to modify the users PATH environment vvariable to include
+// the app's install path.  May still be useful if, for example, we want
+// too add a 'sage' command-line executable (in this case probably just a
+// batch script or something)
+const
+  ModPathName = 'modifypath';
+  ModPathType = 'user';
+
+function ModPathDir(): TArrayOfString;
+begin
+  setArrayLength(Result, 1);
+  Result[0] := ExpandConstant('{app}');
+end;
+#include "modpath.iss"
+
+
 procedure InitializeWizard;
 var
   WelcomePage: TWizardPage;
   InstallDockerCaption: String;
 //  TrackingLabel: TLabel;
 begin
+  // Initialize global variables
   TrackingDisabled := True;  // Remove this if we re-enable tracking
+  CancelWithoutPrompt := False
+
   WelcomePage := PageFromID(wpWelcome)
 
   WizardForm.WelcomeLabel2.AutoSize := True;
@@ -312,20 +333,42 @@ begin
 end;
 
 
-// This is used to modify the users PATH environment vvariable to include
-// the app's install path.  May still be useful if, for example, we want
-// too add a 'sage' command-line executable (in this case probably just a
-// batch script or something)
-const
-  ModPathName = 'modifypath';
-  ModPathType = 'user';
-
-function ModPathDir(): TArrayOfString;
+procedure CurStepChanged(CurStep: TSetupStep);
+var
+  Success: Boolean;
 begin
-  setArrayLength(Result, 1);
-  Result[0] := ExpandConstant('{app}');
+  Success := True;
+  if CurStep = ssPostInstall then
+  begin
+    TrackEvent('Installing Files Succeeded');
+    if IsTaskSelected(ModPathName) then
+      ModPath();
+
+    if Success then
+      TrackEvent('Installer Finished');
+  end;
 end;
-#include "modpath.iss"
+
+
+procedure CancelButtonClick(CurPageID: Integer; var Cancel, Confirm: Boolean);
+begin
+  if CurPageID=wpInstalling then
+    Confirm := not CancelWithoutPrompt;
+end;
+
+
+// This function raises a critical error message and aborts the
+// installation without giving the user the option to proceed
+// despite the error.
+procedure FatalError(Message: String);
+begin
+  MsgBox(Message, mbCriticalError, MB_OK);
+
+  CancelWithoutPrompt := True;
+  // This causes CancelButtonClick event to be invoked
+  WizardForm.Close;
+  exit;
+end;
 
 
 // Run a shell command, capturing and returning stdout
@@ -521,9 +564,7 @@ begin
     WizardForm.StatusLabel.Caption := 'Initializing Docker VM... [OK]';
   end else begin
     TrackEvent('VM creation Failed: ' + Stdout);
-    MsgBox('The Docker VM could not be created', mbCriticalError, MB_OK);
-    WizardForm.Close;
-    exit;
+    FatalError('The Docker VM could not be created');
   end;
 end;
 
@@ -537,16 +578,14 @@ begin
   // to update a progress bar, or at least display a spinner?
   WizardForm.StatusLabel.Caption := 'Starting Docker VM...'
   RunDockerMachine(ExpandConstant('start {#dockerVMName}'), ResultCode, Stdout, True);
+
   if (ResultCode = 0) then
   begin
     RunDockerMachine(ExpandConstant('regenerate-certs -f {#dockerVMName}'),
                      ResultCode, Stdout, True);
     WizardForm.StatusLabel.Caption := 'Starting Docker VM... [OK]';
   end else begin
-    TrackEvent('VM start Failed: ' + Stdout);
-    MsgBox('The Docker VM could not be started', mbCriticalError, MB_OK);
-    WizardForm.Close;
-    exit;
+    FatalError('The Docker VM could not be started');
   end;
 end;
 
@@ -556,13 +595,21 @@ end;
 // the docker client (namely load the sagemath image, which we then delete
 // from the installation)
 procedure InitializeDockerMachine();
+var
+  MachineAlreadyCreated: Boolean;
 begin
   TrackEvent('Installing the Sage image');
+  MachineAlreadyCreated := False;
 
   if not IsDockerMachineCreated() then
-    CreateDockerMachine();
+  begin;
+    CreateDockerMachine()
+    // Double check whether the machine created successfully
+    // otherwise an error should have been raised already
+    MachineAlreadyCreated := IsDockerMachineCreated();
+  end;
 
-  if not IsDockerMachineRunning() then
+  if (MachineAlreadyCreated and not IsDockerMachineRunning()) then
     StartDockerMachine();
 end;
 
@@ -584,24 +631,6 @@ begin
                                       ExpandConstant('{#SageImageTag}')]), True);
   end else begin
     TrackEvent('Image load Failed');
-    MsgBox(ExpandConstant('The {#SageGroupName} Docker image could not be loaded'), mbCriticalError, MB_OK);
-    WizardForm.Close;
-  end;
-end;
-
-
-procedure CurStepChanged(CurStep: TSetupStep);
-var
-  Success: Boolean;
-begin
-  Success := True;
-  if CurStep = ssPostInstall then
-  begin
-    TrackEvent('Installing Files Succeeded');
-    if IsTaskSelected(ModPathName) then
-      ModPath();
-
-    if Success then
-      TrackEvent('Installer Finished');
+    FatalError(ExpandConstant('The {#SageGroupName} Docker image could not be loaded'));
   end;
 end;
