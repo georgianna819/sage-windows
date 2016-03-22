@@ -1,7 +1,8 @@
 # TODO: Don't hard-code "default", port #s, etc.
 [CmdletBinding()]
 Param(
-    [switch]$OpenBrowser = $false
+    [switch]$OpenBrowser = $false,
+    [switch]$Notebook = $false
 )
 
 $vmname = "default"
@@ -33,36 +34,52 @@ $machine = Join-Path -Path $env:DOCKER_TOOLBOX_INSTALL_PATH -ChildPath 'docker-m
 
 # Set up the VM port forwarding
 # Silence errors that occur if the port map is already configured
-& $vbm controlvm "$vmname" natpf1 "sagemath,tcp,,$port,,$port" > $null 2>&1
-
-$mount = "/" + ($env:USERPROFILE -Replace '\\','/' -Replace ':','') + ":/home/sage"
-& $docker run -d -p "${port}:${port}" -v "$mount" --name $container $image
-
-# Wait to make sure the server connection is up
-$dmip = (& $dm ip $vmname | Out-String).Trim()
-
-Write-Host -NoNewline "Testing web server connection..."
-do {
-    $res = Test-PortConnection -TargetHost $dmip -TargetPort $port -Timeout $timeout
-    if($res.ConnectionStatus -eq "Success") {
-        break
-    }
-    Write-Host ""
-    $retries -= 1
-    if($retries -gt 0) {
-        Write-Host -NoNewLine "Retrying..."
-    }
-} while($retries -gt 0)
-
-if($retries -eq 0) {
-    Write-Host ""
-    Write-Host "Starting SageMath server failed."
-    Read-Host -Prompt "Press Enter to exit..."
-} else {
-    Write-Host "[READY]"
+if($Notebook) {
+    & $vbm controlvm "$vmname" natpf1 "sagemath,tcp,,$port,,$port" > $null 2>&1
 }
 
+$mount = "/" + ($env:USERPROFILE -Replace '\\','/' -Replace ':','') + ":/home/sage"
+
+if($Notebook) {
+    # The default entry-point for the sagemath-jupyter container
+    # is to start the notebook; only need to override it for console
+    # mode
+    $daemon = "-d"
+    $interactivity = ""
+} else {
+    $entrypoint = "--entrypoint=sage"
+    $interactivity = "-t -i"
+}
+
+& $docker run $interactivity.Split() -p "${port}:${port}" -v "$mount" --name $container $entrypoint $image
+
+if($Notebook) {
+# Wait to make sure the server connection is up
+    $dmip = (& $dm ip $vmname | Out-String).Trim()
+
+    Write-Host -NoNewline "Testing web server connection..."
+    do {
+        $res = Test-PortConnection -TargetHost $dmip -TargetPort $port -Timeout $timeout
+        if($res.ConnectionStatus -eq "Success") {
+            break
+        }
+        Write-Host ""
+        $retries -= 1
+        if($retries -gt 0) {
+            Write-Host -NoNewLine "Retrying..."
+        }
+    } while($retries -gt 0)
+
+    if($retries -eq 0) {
+        Write-Host ""
+        Write-Host "Starting SageMath server failed."
+        Read-Host -Prompt "Press Enter to exit..."
+    } else {
+        Write-Host "[READY]"
+    }
+
 # This should launch the default web browser
-if($OpenBrowser) {
-    & explorer.exe http://localhost:$port
+    if($OpenBrowser) {
+        & explorer.exe http://localhost:$port
+    }
 }
