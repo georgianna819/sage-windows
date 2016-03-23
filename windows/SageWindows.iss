@@ -74,7 +74,7 @@ Name: "full"; Description: "Full installation"
 Name: "custom"; Description: "Custom installation"; Flags: iscustom
 
 [Run]
-Filename: "{win}\explorer.exe"; Parameters: "{userprograms}\{#SageGroupName}\"; Flags: postinstall skipifsilent; Description: "View Shortcuts in File Explorer"
+//Filename: "{win}\explorer.exe"; Parameters: "{userprograms}\{#SageGroupName}\"; Flags: postinstall skipifsilent; Description: "View Shortcuts in File Explorer"
 
 [Tasks]
 //Name: desktopicon; Description: "{cm:CreateDesktopIcon}"
