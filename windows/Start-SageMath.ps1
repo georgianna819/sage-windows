@@ -44,8 +44,8 @@ if($Notebook) {
     # The default entry-point for the sagemath-jupyter container
     # is to start the notebook; only need to override it for console
     # mode
-    $daemon = "-d"
-    $interactivity = ""
+    $entrypoint = ""
+    $interactivity = "-d"
 } else {
     $entrypoint = "--entrypoint=sage"
     $interactivity = "-t -i"
