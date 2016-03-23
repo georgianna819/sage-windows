@@ -99,7 +99,7 @@ Source: ".\Start-SageMath.ps1"; DestDir: "{app}"; Flags: ignoreversion; Componen
 Source: "{#sageMathImage}"; DestDir: "{tmp}"; Flags: ignoreversion; Components: "SageMath"; BeforeInstall: InitializeDockerMachine; AfterInstall: LoadSageImage
 
 [Icons]
-Name: "{commondesktop}\SageMath Notebook"; WorkingDir: "{app}"; Filename: "{sys}\WindowsPowerShell\v1.0\powershell.exe"; Parameters: "-ExecutionPolicy Unrestricted -Command Start-SageMath.ps1 -OpenBrowser"; IconFilename: "{app}\sagemath.ico"; Components: SageMath
+Name: "{commondesktop}\SageMath Notebook"; WorkingDir: "{app}"; Filename: "{sys}\WindowsPowerShell\v1.0\powershell.exe"; Parameters: "-WindowStyle Hidden -ExecutionPolicy Unrestricted -Command Start-SageMath.ps1 -OpenBrowser"; IconFilename: "{app}\sagemath.ico"; Components: SageMath
 
 [Code]
 #include "base64.iss"
