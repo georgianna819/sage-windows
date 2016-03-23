@@ -93,8 +93,8 @@ Source: "{#dockerToolbox}"; DestDir: "{tmp}"; Flags: ignoreversion deleteafterin
 // Eventually we could avoid shipping this if Docker Toolbox starts
 // including it; see https://github.com/docker/toolbox/pull/321 
 Source: ".\resources\sagemath.ico"; DestDir: "{app}"; Flags: ignoreversion; Components: "SageMath"
-Source: ".\lib\Start-DockerMachine.ps1"; DestDir: "{app}"; Flags: ignoreversion; Components: "SageMath"
-Source: ".\lib\Test-PortConnection.ps1"; DestDir: "{app}"; Flags: ignoreversion; Components: "SageMath"
+Source: ".\lib\Start-DockerMachine.ps1"; DestDir: "{app}\lib"; Flags: ignoreversion; Components: "SageMath"
+Source: ".\lib\Test-PortConnection.ps1"; DestDir: "{app}\lib"; Flags: ignoreversion; Components: "SageMath"
 Source: ".\Start-SageMath.ps1"; DestDir: "{app}"; Flags: ignoreversion; Components: "SageMath"
 Source: "{#sageMathImage}"; DestDir: "{tmp}"; Flags: ignoreversion; Components: "SageMath"; BeforeInstall: InitializeDockerMachine; AfterInstall: LoadSageImage
 
