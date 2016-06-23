@@ -6,7 +6,7 @@ set -e
 DOCKER_BUILD_FLAGS=$@
 
 docker build -t windows-installer -f Dockerfile ${DOCKER_BUILD_FLAGS} .
-CONTAINER="$(docker create -t -v $(pwd)/images:/images -v /var/run/docker.sock:/var/run/docker.sock windows-installer)"
+CONTAINER="$(docker create -t -v "$(pwd)/images:/images" -v /var/run/docker.sock:/var/run/docker.sock windows-installer)"
 docker start -i $CONTAINER
 mkdir -p dist/
 docker cp "${CONTAINER}:/installer/Output/." dist/
