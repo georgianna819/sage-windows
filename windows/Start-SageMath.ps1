@@ -30,31 +30,36 @@ $machine = Join-Path -Path $env:DOCKER_TOOLBOX_INSTALL_PATH -ChildPath 'docker-m
 # Annoyingly, boot2docker currently tends to mount the /C/Users under
 # "/c/Users", and when we set up volume mounting it is case-sensitive
 # so just to make sure both cases exist we create a symlink if necessary
-& $machine ssh $vmname '[ ! -d /C ] && sudo ln -sf /c /C'
+Start-Process $machine "ssh",$vmname,"[ ! -d /C ] && sudo ln -sf /c /C" -Wait -WindowStyle Hidden
 
 # Set up the VM port forwarding
 # Silence errors that occur if the port map is already configured
 if($Notebook) {
-    & $vbm controlvm "$vmname" natpf1 "sagemath,tcp,,$port,,$port" > $null 2>&1
+    Start-Process $vbm "controlvm",$vmname,"natpf1","sagemath,tcp,,$port,,$port" -Wait -WindowStyle Hidden
 }
 
-$mount = "/" + ($env:USERPROFILE -Replace '\\','/' -Replace ':','') + ":/home/sage"
+$mount = "`"/" + ($env:USERPROFILE -Replace '\\','/' -Replace ':','') + "`":/home/sage"
 
 if($Notebook) {
     # The default entry-point for the sagemath-jupyter container
     # is to start the notebook; only need to override it for console
     # mode
-    $entrypoint = ""
+    # Note: Start-Process will complain if an argument is empty-string
+    # because it is terrible.  However, it seems it will take a space
+    # just fine (YMMV)
+    $entrypoint = " "
     $interactivity = "-d"
 } else {
     $entrypoint = "--entrypoint=sage"
     $interactivity = "-t -i"
 }
 
-& $docker run $interactivity.Split() -p "${port}:${port}" -v "$mount" --name $container $entrypoint $image
+Write-Host (@("run") + $interactivity.Split() + @("-p","${port}:${port}","-v",$mount,"--name",$container,$entrypoint,$image))
+
+Start-Process $docker (@("run") + $interactivity.Split() + "-p","${port}:${port}","-v",$mount,"--name",$container,$entrypoint,$image) -Wait -WindowStyle Hidden
 
 if($Notebook) {
-# Wait to make sure the server connection is up
+    # Wait to make sure the server connection is up
     $dmip = (& $dm ip $vmname | Out-String).Trim()
 
     Write-Host -NoNewline "Testing web server connection..."
@@ -76,10 +81,9 @@ if($Notebook) {
         Read-Host -Prompt "Press Enter to exit..."
     } else {
         Write-Host "[READY]"
-    }
-
-# This should launch the default web browser
-    if($OpenBrowser) {
-        & explorer.exe http://localhost:$port
+        # This should launch the default web browser
+        if($OpenBrowser) {
+            & explorer.exe http://localhost:$port
+        }
     }
 }
