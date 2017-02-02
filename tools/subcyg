@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# Uses sed (amusingly) to prepare an arbitrary value for use
+# in a sed expression
+function sed_escape() {
+    echo "$1" | sed -e 's/[]\/$*.^|[]/\\&/g'
+}
+
+
+function path_replace() {
+    local path
+    local root
+    local new_root
+    path=$(cygpath -w -p "$PATH")
+    root=$(sed_escape "$(cygpath -w -a /)")
+    new_root=$(sed_escape "$(cygpath -w -a "$1")")
+    path=$(echo "$path" | sed 's/'"$root"'/'"$new_root"'/g')
+    echo $(cygpath -u -p $path)
+}
+
+
+cygstart=$(which cygstart)
+
+subcyg_root=$1
+shift
+
+# NOTE: Have to be *very* careful about quoting everything after the -c
+# This does not yet cover all cases
+PATH="$(path_replace "$subcyg_root")" $cygstart --wait ${subcyg_root}/bin/bash --login -c '"'$@'"'
