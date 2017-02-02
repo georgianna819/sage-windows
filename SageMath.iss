@@ -1,5 +1,10 @@
 #define MyAppName "SageMath"
-#define MyAppVersion "7.4"
+
+#ifndef SageVersion
+  #define SageVersion "7.4"
+#endif
+
+#define MyAppVersion SageVersion
 #define MyAppPublisher "SageMath"
 #define MyAppURL "http://www.sagemath.org/"
 #define MyAppContact "http://www.sagemath.org/"
@@ -10,8 +15,12 @@
   #define Compression "lzma"
 #endif
 
-#ifndef AppBuildDir
-  #define AppBuildDir "build"
+#ifndef EnvsDir
+  #define EnvsDir "envs"
+#endif
+
+#ifndef OutputDir
+  #define OutputDir "dist"
 #endif
 
 #ifndef DiskSpanning
@@ -22,9 +31,10 @@
   #endif
 #endif
 
-#define Bin         "{app}\app\bin"
-#define OptSageMath "{app}\app\opt\sagemath-" + MyAppVersion
-#define OptSageMathPosix "/opt/sagemath-" + MyAppVersion
+#define Runtime     "{app}\runtime"
+#define Bin         "{#Runtime}\bin"
+#define SageRootWin "{#Runtime}\opt\sagemath-" + MyAppVersion
+#define SageRootPosix "/opt/sagemath-" + MyAppVersion
 
 [Setup]
 AppCopyright={#MyAppPublisher}
@@ -44,7 +54,7 @@ DefaultGroupName={#SageGroupName}
 DisableProgramGroupPage=yes
 DisableWelcomePage=no
 DiskSpanning={#DiskSpanning}
-OutputDir=dist
+OutputDir={#OutputDir}
 OutputBaseFilename={#MyAppName}-{#MyAppVersion}
 Compression={#Compression}
 SolidCompression=yes
@@ -64,8 +74,8 @@ Name: startmenu; Description: "Create &start menu icons"; GroupDescription: "Add
 Name: desktop; Description: "Create &desktop icons"; GroupDescription: "Additional icons"
 
 [Files]
-Source: "dot_sage\*"; DestDir: "{#OptSageMath}\dot_sage"; Flags: recursesubdirs ignoreversion
-Source: "{#AppBuildDir}\app\*"; DestDir: "{app}\app"; Flags: recursesubdirs ignoreversion
+Source: "dot_sage\*"; DestDir: "{#SageRootWin}\dot_sage"; Flags: recursesubdirs ignoreversion
+Source: "{#EnvsDir}\runtime-{#SageVersion}\*"; DestDir: "{#Runtime}"; Flags: recursesubdirs ignoreversion
 Source: "resources\sagemath.ico"; DestDir: "{app}"; Flags: ignoreversion; AfterInstall: FixupSymlinks
 
 ; InnoSetup will not create empty directories found when including files
@@ -81,24 +91,24 @@ Source: "resources\sagemath.ico"; DestDir: "{app}"; Flags: ignoreversion; AfterI
 ; /dev/shm and /dev/mqueue are used by the system for POSIX semaphores, shared
 ; memory, and message queues and must be created world-writeable
 [Dirs]
-Name: "{app}\app\etc\fstab.d"; Permissions: users-modify
-Name: "{app}\app\dev\shm"; Permissions: users-modify
-Name: "{app}\app\dev\mqueue"; Permissions: users-modify
+Name: "{#Runtime}\etc\fstab.d"; Permissions: users-modify
+Name: "{#Runtime}\dev\shm"; Permissions: users-modify
+Name: "{#Runtime}\dev\mqueue"; Permissions: users-modify
 
 [UninstallDelete]
-Type: filesandordirs; Name: "{app}\app\etc\fstab.d"
-Type: filesandordirs; Name: "{app}\app\dev\shm"
-Type: filesandordirs; Name: "{app}\app\dev\mqueue"
+Type: filesandordirs; Name: "{#Runtime}\etc\fstab.d"
+Type: filesandordirs; Name: "{#Runtime}\dev\shm"
+Type: filesandordirs; Name: "{#Runtime}\dev\mqueue"
 
-#define RunSage "/bin/bash --login -c '" + OptSageMathPosix + "/sage'"
+#define RunSage "/bin/bash --login -c '" + SageRootPosix + "/sage'"
 #define RunSageTitle "SageMath Console"
 #define RunSageDoc "The SageMath console interface"
 
-#define RunSageSh "/bin/bash --login -c '" + OptSageMathPosix + "/sage -sh'"
+#define RunSageSh "/bin/bash --login -c '" + SageRootPosix + "/sage -sh'"
 #define RunSageShTitle "SageMath Shell"
 #define RunSageShDoc "Command prompt in the SageMath shell environment"
 
-#define RunSageNb "/bin/bash --login -c '" + OptSageMathPosix + "/sage --notebook jupyter'"
+#define RunSageNb "/bin/bash --login -c '" + SageRootPosix + "/sage --notebook jupyter'"
 #define RunSageNbTitle "SageMath Notebook Server"
 #define RunSageNbDoc "Start SageMath notebook server"
 

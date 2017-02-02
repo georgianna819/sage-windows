@@ -75,7 +75,7 @@ now.
 #     from within the $SAGE_ROOT in build/app (/opt/sagemath-<version>)
 #         $ rm -rf bootstrap config* logs m4 Makefile upstream \
 #                  local/var/tmp/sage/build/* local/var/lock/* \
-#                  src/build local/share/doc/sage/doctrees
+#                  src/build local/share/doc/sage/doctrees .git*
 # 16. Install the files in cygwin_extras by just
 #         $ cp -r cygwin_extras/* build/app/
 # 17. Install the /etc/sage-version file:
@@ -86,3 +86,4 @@ now.
 #         $ echo 'C:\Users /home ntfs binary,posix=1,acl 0 0' >> build/app/etc/fstab
 # 21. Generate the symlinks.lst file:
 #         $ (cd build/app/ && find . -type l) > build/app/etc/symlinks.lst
+# 22. Run inno-setup
