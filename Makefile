@@ -115,11 +115,7 @@ $(cygwin-runtime-extras): $(cygwin-runtime)
 	@touch $@
 
 
-$(STAMPS)/cygwin-%: $(ENVS)/% | $(STAMPS)
-	@touch $@
-	
-
-$(ENVS)/%: cygwin-sage-%.list $(CYGWIN_SETUP)
+$(STAMPS)/cygwin-%: cygwin-sage-%.list $(CYGWIN_SETUP) | $(STAMPS)
 	"$(CYGWIN_SETUP)" --site $(CYGWIN_MIRROR) \
 		--local-package-dir "$$(cygpath -w -a $(DOWNLOAD))" \
 		--root "$$(cygpath -w -a $@)" \
@@ -132,6 +128,7 @@ $(ENVS)/%: cygwin-sage-%.list $(CYGWIN_SETUP)
 	fi
 	# A bit of cleanup
 	rm -f $@/Cygwin*.{bat,ico}
+	@touch $@
 
 
 $(SAGE_STARTED): $(SAGE_MAKEFILE)
