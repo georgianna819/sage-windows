@@ -109,8 +109,10 @@ $(env-build): $(cygwin-build) $(sage-build)
 	@touch $@
 
 
-# TODO: This doesn't build the documentation yet
 $(sage-build): $(cygwin-build) $(SAGE_STARTED)
+	(cd "$(SAGE_ROOT_BUILD)" && local/bin/sage-rebaseall.sh)
+	$(SUBCYG) "$(ENV_BUILD_DIR)" \
+		"(cd $(SAGE_ROOT) && $(SAGE_ENVVARS) make doc)"
 	@touch $@
 
 
