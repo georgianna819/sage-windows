@@ -46,6 +46,13 @@ SAGE_ROOT=/opt/sagemath-$(SAGE_VERSION)
 SAGE_ROOT_BUILD=$(ENV_BUILD_DIR)$(SAGE_ROOT)
 SAGE_ROOT_RUNTIME=$(ENV_RUNTIME_DIR)$(SAGE_ROOT)
 
+SAGE_ENVVARS:=\
+	SAGE_NUM_THREADS=1 \
+	SAGE_INSTALL_CCACHE=yes \
+	CCACHE_DIR="$(HOME)/.ccache" \
+	SAGE_FAT_BINARY=yes \
+	SAGE_ATLAS_LIB=/lib
+
 # Outputs representing success in the Sage build process
 SAGE_CONFIGURE=$(SAGE_ROOT_BUILD)/configure
 SAGE_MAKEFILE=$(SAGE_ROOT_BUILD)/build/make/Makefile
@@ -132,10 +139,8 @@ $(STAMPS)/cygwin-%: cygwin-sage-%.list $(CYGWIN_SETUP) | $(STAMPS)
 
 
 $(SAGE_STARTED): $(SAGE_MAKEFILE)
-	$(SUBCYG) "$(ENV_BUILD_DIR)" "(cd $(SAGE_ROOT) && \
-	    (SAGE_NUM_THREADS=1 SAGE_INSTALL_CCACHE=yes CCACHE="$$HOME/.ccache" \
-		SAGE_FAT_BINARY=yes SAGE_ATLAS_LIB=/lib \
-		make start))"
+	$(SUBCYG) "$(ENV_BUILD_DIR)" \
+		"(cd $(SAGE_ROOT) && $(SAGE_ENVVARS) make start)"
 
 
 $(SAGE_MAKEFILE): $(SAGE_CONFIGURE)
