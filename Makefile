@@ -39,7 +39,7 @@ DOT_SAGE=dot_sage
 ICONS:=$(wildcard $(RESOURCES)/*.bmp) $(wildcard $(RESOURCES)/*.ico)
 
 ENV_BUILD_DIR=$(ENVS)/build-$(ARCH)
-ENV_RUNIME_DIR=$(ENVS)/runtime-$(SAGE_VERSION)-$(ARCH)
+ENV_RUNTIME_DIR=$(ENVS)/runtime-$(SAGE_VERSION)-$(ARCH)
 
 SAGE_GIT=git://git.sagemath.org/sage.git
 SAGE_ROOT=/opt/sagemath-$(SAGE_VERSION)
@@ -110,7 +110,8 @@ $(env-build): $(cygwin-build) $(sage-build)
 
 
 $(sage-build): $(cygwin-build) $(SAGE_STARTED)
-	(cd "$(SAGE_ROOT_BUILD)" && local/bin/sage-rebaseall.sh)
+	SHELL=/bin/dash $(SUBCYG) "$(ENV_BUILD_DIR)" \
+		  "(cd $(SAGE_ROOT) && local/bin/sage-rebaseall.sh local)"
 	$(SUBCYG) "$(ENV_BUILD_DIR)" \
 		"(cd $(SAGE_ROOT) && $(SAGE_ENVVARS) make doc)"
 	@touch $@
@@ -124,7 +125,12 @@ $(cygwin-runtime-extras): $(cygwin-runtime)
 	@touch $@
 
 
-$(STAMPS)/cygwin-%: cygwin-sage-%.list $(CYGWIN_SETUP) | $(STAMPS)
+$(STAMPS)/cygwin-%: $(ENVS)/% | $(STAMPS)
+	@touch $@
+
+
+.SECONDARY: $(ENV_BUILD_DIR) $(ENV_RUNTIME_DIR)
+$(ENVS)/%: cygwin-sage-%.list $(CYGWIN_SETUP)
 	"$(CYGWIN_SETUP)" --site $(CYGWIN_MIRROR) \
 		--local-package-dir "$$(cygpath -w -a $(DOWNLOAD))" \
 		--root "$$(cygpath -w -a $@)" \
@@ -137,7 +143,6 @@ $(STAMPS)/cygwin-%: cygwin-sage-%.list $(CYGWIN_SETUP) | $(STAMPS)
 	fi
 	# A bit of cleanup
 	rm -f $@/Cygwin*.{bat,ico}
-	@touch $@
 
 
 $(SAGE_STARTED): $(SAGE_MAKEFILE)
