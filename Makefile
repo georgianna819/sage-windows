@@ -80,7 +80,7 @@ DIRS=$(DIST) $(DOWNLOAD) $(ENVS) $(STAMPS)
 
 all: $(SAGE_INSTALLER)
 
-$(SAGE_INSTALLER): $(ISCC) $(SOURCES) $(env-runtime) | $(DIST)
+$(SAGE_INSTALLER): $(SOURCES) $(env-runtime) | $(DIST)
 	cd $(CUDIR)
 	"$(ISCC)" /DSageVersion=$(SAGE_VERSION) /DEnvsDir="$(ENVS)" \
 		/DOutputDir="$(DIST)" $(SAGEMATH_ISS)
