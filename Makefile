@@ -130,7 +130,7 @@ $(STAMPS)/cygwin-%: $(ENVS)/% | $(STAMPS)
 
 
 .SECONDARY: $(ENV_BUILD_DIR) $(ENV_RUNTIME_DIR)
-$(ENVS)/%: cygwin-sage-%.list $(CYGWIN_SETUP)
+$(ENVS)/%-$(SAGE_VERSION)-$(ARCH): cygwin-sage-%-$(ARCH).list $(CYGWIN_SETUP)
 	"$(CYGWIN_SETUP)" --site $(CYGWIN_MIRROR) \
 		--local-package-dir "$$(cygpath -w -a $(DOWNLOAD))" \
 		--root "$$(cygpath -w -a $@)" \
