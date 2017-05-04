@@ -6,10 +6,12 @@ fi
 
 env=$(which env)
 cygstart=$(which cygstart)
+cmdpath=$(dirname $(which cmd))
 
 subcyg_root=${1%/}
 shift
 
 # NOTE: Have to be *very* careful about quoting everything after the -c
 # This does not yet cover all cases
-$env -i $cygstart --wait ${subcyg_root}$SHELL -l -c '"'$@'"'
+$env -i PATH="$cmdpath" \
+    $cygstart --wait ${subcyg_root}$SHELL -l -c '"'$@'"'
