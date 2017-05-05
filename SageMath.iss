@@ -32,8 +32,8 @@
 #endif
 
 #define Runtime     "{app}\runtime"
-#define Bin         "{#Runtime}\bin"
-#define SageRootWin "{#Runtime}\opt\sagemath-" + MyAppVersion
+#define Bin         Runtime + "\bin"
+#define SageRootWin Runtime + "\opt\sagemath-" + MyAppVersion
 #define SageRootPosix "/opt/sagemath-" + MyAppVersion
 
 [Setup]
@@ -113,17 +113,17 @@ Type: filesandordirs; Name: "{#Runtime}\dev\mqueue"
 #define RunSageNbDoc "Start SageMath notebook server"
 
 [Icons]
-Name: "{app}\SageMath"; Filename: "{#bin}\mintty.exe"; Parameters: "-t '{#RunSageTitle}' -i sagemath.ico {#RunSage}"; WorkingDir: "{app}"; Comment: "{#RunSageDoc}"; IconFilename: "{app}\sagemath.ico"
-Name: "{group}\SageMath"; Filename: "{#bin}\mintty.exe"; Parameters: "-t '{#RunSageTitle}' -i sagemath.ico {#RunSage}"; WorkingDir: "{app}"; Comment: "{#RunSageDoc}"; IconFilename: "{app}\sagemath.ico"; Tasks: startmenu
-Name: "{commondesktop}\SageMath"; Filename: "{#bin}\mintty.exe"; Parameters: "-t '{#RunSageTitle}' -i sagemath.ico {#RunSage}"; WorkingDir: "{app}"; Comment: "{#RunSageDoc}"; IconFilename: "{app}\sagemath.ico"; Tasks: desktop
+Name: "{app}\SageMath"; Filename: "{#Bin}\mintty.exe"; Parameters: "-t '{#RunSageTitle}' -i sagemath.ico {#RunSage}"; WorkingDir: "{app}"; Comment: "{#RunSageDoc}"; IconFilename: "{app}\sagemath.ico"
+Name: "{group}\SageMath"; Filename: "{#Bin}\mintty.exe"; Parameters: "-t '{#RunSageTitle}' -i sagemath.ico {#RunSage}"; WorkingDir: "{app}"; Comment: "{#RunSageDoc}"; IconFilename: "{app}\sagemath.ico"; Tasks: startmenu
+Name: "{commondesktop}\SageMath"; Filename: "{#Bin}\mintty.exe"; Parameters: "-t '{#RunSageTitle}' -i sagemath.ico {#RunSage}"; WorkingDir: "{app}"; Comment: "{#RunSageDoc}"; IconFilename: "{app}\sagemath.ico"; Tasks: desktop
 
-Name: "{app}\SageMath Shell"; Filename: "{#bin}\mintty.exe"; Parameters: "-t '{#RunSageShTitle}' -i sagemath.ico {#RunSageSh}"; WorkingDir: "{app}"; Comment: "{#RunSageShDoc}"; IconFilename: "{app}\sagemath.ico"
-Name: "{group}\SageMath Shell"; Filename: "{#bin}\mintty.exe"; Parameters: "-t '{#RunSageShTitle}' -i sagemath.ico {#RunSageSh}"; WorkingDir: "{app}"; Comment: "{#RunSageShDoc}"; IconFilename: "{app}\sagemath.ico"; Tasks: startmenu
-Name: "{commondesktop}\SageMath Shell"; Filename: "{#bin}\mintty.exe"; Parameters: "-t '{#RunSageShTitle}' -i sagemath.ico {#RunSageSh}"; WorkingDir: "{app}"; Comment: "{#RunSageShDoc}"; IconFilename: "{app}\sagemath.ico"; Tasks: desktop
+Name: "{app}\SageMath Shell"; Filename: "{#Bin}\mintty.exe"; Parameters: "-t '{#RunSageShTitle}' -i sagemath.ico {#RunSageSh}"; WorkingDir: "{app}"; Comment: "{#RunSageShDoc}"; IconFilename: "{app}\sagemath.ico"
+Name: "{group}\SageMath Shell"; Filename: "{#Bin}\mintty.exe"; Parameters: "-t '{#RunSageShTitle}' -i sagemath.ico {#RunSageSh}"; WorkingDir: "{app}"; Comment: "{#RunSageShDoc}"; IconFilename: "{app}\sagemath.ico"; Tasks: startmenu
+Name: "{commondesktop}\SageMath Shell"; Filename: "{#Bin}\mintty.exe"; Parameters: "-t '{#RunSageShTitle}' -i sagemath.ico {#RunSageSh}"; WorkingDir: "{app}"; Comment: "{#RunSageShDoc}"; IconFilename: "{app}\sagemath.ico"; Tasks: desktop
 
-Name: "{app}\SageMath Notebook"; Filename: "{#bin}\mintty.exe"; Parameters: "-t '{#RunSageNbTitle}' -i sagemath.ico {#RunSageNb}"; WorkingDir: "{app}"; Comment: "{#RunSageNbDoc}"; IconFilename: "{app}\sagemath.ico"
-Name: "{group}\SageMath Notebook"; Filename: "{#bin}\mintty.exe"; Parameters: "-t '{#RunSageNbTitle}' -i sagemath.ico {#RunSageNb}"; WorkingDir: "{app}"; Comment: "{#RunSageNbDoc}"; IconFilename: "{app}\sagemath.ico"; Tasks: startmenu
-Name: "{commondesktop}\SageMath Notebook"; Filename: "{#bin}\mintty.exe"; Parameters: "-t '{#RunSageNbTitle}' -i sagemath.ico {#RunSageNb}"; WorkingDir: "{app}"; Comment: "{#RunSageNbDoc}"; IconFilename: "{app}\sagemath.ico"; Tasks: desktop
+Name: "{app}\SageMath Notebook"; Filename: "{#Bin}\mintty.exe"; Parameters: "-t '{#RunSageNbTitle}' -i sagemath.ico {#RunSageNb}"; WorkingDir: "{app}"; Comment: "{#RunSageNbDoc}"; IconFilename: "{app}\sagemath.ico"
+Name: "{group}\SageMath Notebook"; Filename: "{#Bin}\mintty.exe"; Parameters: "-t '{#RunSageNbTitle}' -i sagemath.ico {#RunSageNb}"; WorkingDir: "{app}"; Comment: "{#RunSageNbDoc}"; IconFilename: "{app}\sagemath.ico"; Tasks: startmenu
+Name: "{commondesktop}\SageMath Notebook"; Filename: "{#Bin}\mintty.exe"; Parameters: "-t '{#RunSageNbTitle}' -i sagemath.ico {#RunSageNb}"; WorkingDir: "{app}"; Comment: "{#RunSageNbDoc}"; IconFilename: "{app}\sagemath.ico"; Tasks: desktop
 
 [Code]
 procedure FixupSymlinks();
