@@ -95,6 +95,7 @@ $(env-runtime): $(cygwin-runtime) $(sage-runtime) $(cygwin-runtime-extras)
 
 
 $(sage-runtime): $(SAGE_ROOT_RUNTIME)
+	@touch $@
 
 $(SAGE_ROOT_RUNTIME): $(cygwin-runtime) $(sage-build)
 	[ -d $(dir $@) ] || mkdir $(dir $@)
@@ -102,7 +103,6 @@ $(SAGE_ROOT_RUNTIME): $(cygwin-runtime) $(sage-build)
 	(cd $@ && rm -rf bootstrap config* logs m4 Makefile \
 		upstream local/var/tmp/sage/build/* local/var/lock/* \
 		src/build local/share/doc/sage/doctrees .git*)
-	@touch $@
 
 
 $(env-build): $(cygwin-build) $(sage-build)
