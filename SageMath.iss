@@ -1,7 +1,7 @@
 #define MyAppName "SageMath"
 
 #ifndef SageVersion
-  #define SageVersion "7.4"
+  #error SageVersion must be defined--pass /DSageVersion=<version> to InnoSetup with the correct version
 #endif
 
 #ifndef SageArch
