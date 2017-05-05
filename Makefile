@@ -82,8 +82,8 @@ all: $(SAGE_INSTALLER)
 
 $(SAGE_INSTALLER): $(SOURCES) $(env-runtime) | $(DIST)
 	cd $(CUDIR)
-	$(ISCC) /DSageVersion=$(SAGE_VERSION) /DEnvsDir="$(ENVS)" \
-		/DOutputDir="$(DIST)" $(SAGEMATH_ISS)
+	$(ISCC) /DSageVersion=$(SAGE_VERSION) /DSageArch=$(ARCH) \
+		/DEnvsDir="$(ENVS)" /DOutputDir="$(DIST)" $(SAGEMATH_ISS)
 
 
 $(foreach target,$(TARGETS),$(eval $(target): $$($(target))))

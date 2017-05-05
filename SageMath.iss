@@ -4,6 +4,16 @@
   #define SageVersion "7.4"
 #endif
 
+#ifndef SageArch
+  #define SageArch "x86_64"
+#endif
+
+#if SageArch == "x86_64"
+  #define MyArchitecturesAllowed "x64"
+#else
+  #define MyArchitecturesAllowed "x86 x64"
+#endif
+
 #define MyAppVersion SageVersion
 #define MyAppPublisher "SageMath"
 #define MyAppURL "http://www.sagemath.org/"
@@ -47,7 +57,7 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-ArchitecturesAllowed=x64
+ArchitecturesAllowed={#MyArchitecturesAllowed}
 ArchitecturesInstallIn64BitMode=x64
 DefaultDirName={pf}\{#SageGroupName}
 DefaultGroupName={#SageGroupName}
@@ -75,7 +85,7 @@ Name: desktop; Description: "Create &desktop icons"; GroupDescription: "Addition
 
 [Files]
 Source: "dot_sage\*"; DestDir: "{#SageRootWin}\dot_sage"; Flags: recursesubdirs ignoreversion
-Source: "{#EnvsDir}\runtime-{#SageVersion}\*"; DestDir: "{#Runtime}"; Flags: recursesubdirs ignoreversion
+Source: "{#EnvsDir}\runtime-{#SageVersion}-{#SageArch}\*"; DestDir: "{#Runtime}"; Flags: recursesubdirs ignoreversion
 Source: "resources\sagemath.ico"; DestDir: "{app}"; Flags: ignoreversion; AfterInstall: FixupSymlinks
 
 ; InnoSetup will not create empty directories found when including files
