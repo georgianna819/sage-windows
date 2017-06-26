@@ -46,12 +46,15 @@ SAGE_ROOT=/opt/sagemath-$(SAGE_VERSION)
 SAGE_ROOT_BUILD=$(ENV_BUILD_DIR)$(SAGE_ROOT)
 SAGE_ROOT_RUNTIME=$(ENV_RUNTIME_DIR)$(SAGE_ROOT)
 
+N_CPUS=$(shell cat /proc/cpuinfo | grep '^processor' | wc -l)
+
 SAGE_ENVVARS:=\
-	SAGE_NUM_THREADS=1 \
+	SAGE_NUM_THREADS=$(N_CPUS) \
 	SAGE_INSTALL_CCACHE=yes \
 	CCACHE_DIR="$(HOME)/.ccache" \
 	SAGE_FAT_BINARY=yes \
-	SAGE_ATLAS_LIB=/lib
+	SAGE_ATLAS_LIB=/lib \
+	MAKE="make -j$(N_CPUS)"
 
 # Outputs representing success in the Sage build process
 SAGE_CONFIGURE=$(SAGE_ROOT_BUILD)/configure
