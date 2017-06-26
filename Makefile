@@ -7,7 +7,7 @@ TARGETS=env-build env-runtime cygwin-build cygwin-runtime sage-build \
 # Can be x86 or x86_64
 ARCH?=x86_64
 
-SAGE_VERSION?=7.4
+SAGE_VERSION?=develop
 SAGE_BRANCH?=$(SAGE_VERSION)
 
 # Output paths
