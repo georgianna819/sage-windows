@@ -48,13 +48,15 @@ SAGE_ROOT_RUNTIME=$(ENV_RUNTIME_DIR)$(SAGE_ROOT)
 
 N_CPUS=$(shell cat /proc/cpuinfo | grep '^processor' | wc -l)
 
+# Note: Be very careful about quoting here; we need literal
+# quotes or else they will be stripped when exec'ing bash
 SAGE_ENVVARS:=\
 	SAGE_NUM_THREADS=$(N_CPUS) \
 	SAGE_INSTALL_CCACHE=yes \
-	CCACHE_DIR="$(HOME)/.ccache" \
+	CCACHE_DIR=\"$(HOME)/.ccache\" \
 	SAGE_FAT_BINARY=yes \
 	SAGE_ATLAS_LIB=/lib \
-	MAKE="make -j$(N_CPUS)"
+	MAKE=\"make -j$(N_CPUS)\"
 
 # Outputs representing success in the Sage build process
 SAGE_CONFIGURE=$(SAGE_ROOT_BUILD)/configure
