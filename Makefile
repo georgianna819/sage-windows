@@ -69,7 +69,7 @@ SOURCES:=$(SAGEMATH_ISS) $(DOT_SAGE) $(ICONS)
 CYGWIN_SETUP_NAME=setup-$(ARCH).exe
 CYGWIN_SETUP=$(DOWNLOAD)/$(CYGWIN_SETUP_NAME)
 CYGWIN_SETUP_URL=https://cygwin.com/$(CYGWIN_SETUP_NAME)
-CYGWIN_MIRROR=ftp://mirrors.kernel.org/sourceware/cygwin/
+CYGWIN_MIRROR=http://mirrors.kernel.org/sourceware/cygwin/
 
 SAGE_INSTALLER=$(DIST)/SageMath-$(SAGE_VERSION).exe
 
