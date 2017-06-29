@@ -14,4 +14,4 @@ shift
 # NOTE: Have to be *very* careful about quoting everything after the -c
 # This does not yet cover all cases
 $env -i PATH="$cmdpath" \
-    $cygstart -v --wait ${subcyg_root}$SHELL -l -c "'""$@""'"
+    $cygstart --wait ${subcyg_root}$SHELL -l -c "'""$@""'"
