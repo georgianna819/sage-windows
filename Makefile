@@ -22,9 +22,9 @@ ISCC?="/cygdrive/c/Program Files (x86)/Inno Setup 5/ISCC.exe"
 ################################################################################
 
 # Actual targets for the main build stages (the stamp files)
-env-build=$(STAMPS)/env-build-$(ARCH)
+env-build=$(STAMPS)/env-build-$(SAGE_VERSION)-$(ARCH)
 env-runtime=$(STAMPS)/env-runtime-$(SAGE_VERSION)-$(ARCH)
-cygwin-build=$(STAMPS)/cygwin-build-$(ARCH)
+cygwin-build=$(STAMPS)/cygwin-build-$(SAGE_VERSION)-$(ARCH)
 cygwin-runtime=$(STAMPS)/cygwin-runtime-$(SAGE_VERSION)-$(ARCH)
 sage-build=$(STAMPS)/sage-build-$(SAGE_VERSION)-$(ARCH)
 sage-runtime=$(STAMPS)/sage-runtime-$(SAGE_VERSION)-$(ARCH)
