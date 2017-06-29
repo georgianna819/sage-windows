@@ -128,7 +128,7 @@ $(cygwin-runtime-extras): $(cygwin-runtime)
 	@touch $@
 
 
-$(STAMPS)/cygwin-%: $(ENVS)/% | $(STAMPS)
+$(STAMPS)/cygwin-%: | $(ENVS)/% $(STAMPS)
 	@touch $@
 
 
