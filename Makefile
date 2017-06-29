@@ -38,7 +38,7 @@ RESOURCES=resources
 DOT_SAGE=dot_sage
 ICONS:=$(wildcard $(RESOURCES)/*.bmp) $(wildcard $(RESOURCES)/*.ico)
 
-ENV_BUILD_DIR=$(ENVS)/build-$(ARCH)
+ENV_BUILD_DIR=$(ENVS)/build-$(SAGE_VERSION)-$(ARCH)
 ENV_RUNTIME_DIR=$(ENVS)/runtime-$(SAGE_VERSION)-$(ARCH)
 
 SAGE_GIT=git://git.sagemath.org/sage.git
