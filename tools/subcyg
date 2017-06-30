@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -o monitor
+
 if [ -z "$SHELL" ]; then
     SHELL=/bin/bash
 fi
@@ -11,7 +13,19 @@ cmdpath=$(dirname $(which cmd))
 subcyg_root=${1%/}
 shift
 
+trap 'rm -f "$subcyg_root$outtmp"' EXIT
+
+outtmp=$(mktemp)
+rm -f "$outtmp"
+
 # NOTE: Have to be *very* careful about quoting everything after the -c
 # This does not yet cover all cases
 $env -i PATH="$cmdpath" \
-    $cygstart --wait ${subcyg_root}$SHELL -l -c "'""$@""'"
+    $cygstart --wait --showminnoactive \
+    ${subcyg_root}$SHELL -l -c "'""$@"' 2>&1 >'$outtmp"'" &
+
+# We can't simply do a fd redirect from the temp file to console this script is
+# running in, since they're in different Cygwins that don't know about each
+# other.  In other words, this Cygwin can't simply follow writes to outtmp.  So
+# instead we just watch it with tail
+tail -F --pid=$! "$subcyg_root$outtmp" 2>/dev/null
