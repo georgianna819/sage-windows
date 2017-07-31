@@ -22,10 +22,12 @@ rm -f "$outtmp"
 # This does not yet cover all cases
 $env -i PATH="$cmdpath" \
     $cygstart --wait --showminnoactive \
-    ${subcyg_root}$SHELL -l -c "'""$@"' 2>&1 >'$outtmp"'" &
+    ${subcyg_root}$SHELL -l -c "'""$@"' >'$outtmp' 2>&1'"'" &
+pid=$!
 
 # We can't simply do a fd redirect from the temp file to console this script is
 # running in, since they're in different Cygwins that don't know about each
 # other.  In other words, this Cygwin can't simply follow writes to outtmp.  So
 # instead we just watch it with tail
-tail -F --pid=$! "$subcyg_root$outtmp" 2>/dev/null
+tail -F --pid=$pid "$subcyg_root$outtmp" 2>/dev/null
+exit $(wait $pid)
