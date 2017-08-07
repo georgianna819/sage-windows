@@ -147,7 +147,7 @@ var
     filenames: TArrayOfString;
     filenam: String;
 begin
-    LoadStringsFromFile(ExpandConstant('{app}\app\etc\symlinks.lst'), filenames);
+    LoadStringsFromFile(ExpandConstant('{#Runtime}\etc\symlinks.lst'), filenames);
     n := GetArrayLength(filenames);
     WizardForm.ProgressGauge.Min := 0;
     WizardForm.ProgressGauge.Max := n - 1;
@@ -159,7 +159,7 @@ begin
         WizardForm.FilenameLabel.Caption := Copy(filenam, 2, Length(filenam));
         WizardForm.ProgressGauge.Position := i;
         Exec(ExpandConstant('{sys}\attrib.exe'), '+S ' + filenam,
-                            ExpandConstant('{app}\app'), SW_HIDE,
+                            ExpandConstant('{#Runtime}'), SW_HIDE,
                             ewNoWait, resultCode);
     end;
 end;
