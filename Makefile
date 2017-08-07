@@ -108,6 +108,8 @@ $(SAGE_ROOT_RUNTIME): $(cygwin-runtime) $(sage-build)
 	(cd $@ && rm -rf bootstrap config* logs m4 Makefile \
 		upstream local/var/tmp/sage/build/* local/var/lock/* \
 		src/build local/share/doc/sage/doctrees .git*)
+	SHELL=/bin/dash $(SUBCYG) "$(ENV_RUNTIME_DIR)" \
+		  "(cd $(SAGE_ROOT) && local/bin/sage-rebaseall.sh local)"
 
 
 $(env-build): $(cygwin-build) $(sage-build)
