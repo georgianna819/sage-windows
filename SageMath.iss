@@ -41,6 +41,8 @@
   #endif
 #endif
 
+#define Source      EnvsDir + "\runtime-" + SageVersion + "-" + SageArch
+
 #define Runtime     "{app}\runtime"
 #define Bin         Runtime + "\bin"
 #define SageRootWin Runtime + "\opt\sagemath-" + MyAppVersion
@@ -75,6 +77,7 @@ UninstallDisplayIcon={app}\unins000.exe
 SetupIconFile=resources\sage-floppy-disk.ico
 ChangesEnvironment=true
 SetupLogging=yes
+LicenseFile="{#Source}\opt\sagemath-{#SageVersion}\COPYING.txt"
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -85,7 +88,7 @@ Name: desktop; Description: "Create &desktop icons"; GroupDescription: "Addition
 
 [Files]
 Source: "dot_sage\*"; DestDir: "{#SageRootWin}\dot_sage"; Flags: recursesubdirs ignoreversion
-Source: "{#EnvsDir}\runtime-{#SageVersion}-{#SageArch}\*"; DestDir: "{#Runtime}"; Flags: recursesubdirs ignoreversion
+Source: "{#Source}\*"; DestDir: "{#Runtime}"; Flags: recursesubdirs ignoreversion
 Source: "resources\sagemath.ico"; DestDir: "{app}"; Flags: ignoreversion; AfterInstall: FixupSymlinks
 
 ; InnoSetup will not create empty directories found when including files
