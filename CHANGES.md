@@ -1,7 +1,7 @@
 Changelog for the Windows Installer
 ===================================
 
-0.3 (unreleased)
+0.3 (2017-12-15)
 ----------------
 
 * Added a license agreement page to the install wizard.
