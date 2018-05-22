@@ -1,33 +1,29 @@
 # Startup configuration for SageMath for Windows
 # Sets a few environment variables and initializes files in the user's home
-# directory, and their DOT_SAGE
+# directory
 source /etc/sage-version
 
 # Simply hard-coded for now
 export SAGE_ROOT=/opt/sagemath-${SAGE_VERSION}
 
-# In Cygwin a user's home directory is normally /home/<windows username>
-# where <windows username> may contain spaces and more or less arbitrary
-# unicode characters, to which many applications included in Sage are
-# not friendly
-#
-# So we create a /dot_sage mount point linking to ${HOME}/.sagemath-7.4
-# in the user's fstab.d (fstab.d should be world-writable)
-REAL_DOT_SAGE=${HOME}/.sagemath-${SAGE_VERSION}
-export DOT_SAGE=/dot_sage
-
-if [ ! -d "${REAL_DOT_SAGE}" ]; then
-    mkdir "${REAL_DOT_SAGE}"
-    cp -r ${SAGE_ROOT}/dot_sage/* "${REAL_DOT_SAGE}"
+# Mount the user's real home directory to /home/sage if not already done
+if [ ! -f "/etc/fstab.d/${USERNAME}" ]; then
+    "$SAGE_ROOT"/local/bin/sage-sethome
 fi
 
-if [ ! -d "${DOT_SAGE}" ]; then
-    # fstab cannot contain spaces in path names
-    # some other special characters should be escaped too but for now space is
-    # the most likely suspicious character
-    safe_dot_sage=$(echo "${REAL_DOT_SAGE}" | sed 's/ /\\040/g')
-    echo "${safe_dot_sage} /dot_sage none bind" > "/etc/fstab.d/${USERNAME}"
-    mount -a
+# .sage migration--older versions of Sage for Windows put DOT_SAGE in
+# ~/.sagemath-${SAGE_VERSION}, but now we are switching over to just
+# ~/.sage, and sharing it between versions.
+# If the user already has ~/.sage we leave it alone and do nothing.
+# Otherwise we move the old ~/.sagemath-${SAGE_VERSION} to ~/.sage.
+OLD_DOT_SAGE="${HOME}/.sagemath-${SAGE_VERSION}"
+NEW_DOT_SAGE="${HOME}/.sage"
+if [ ! -d "$NEW_DOT_SAGE" ]; then
+    if [ -d "$OLD_DOT_SAGE" ]; then
+        mv "$OLD_DOT_SAGE" "$NEW_DOT_SAGE"
+    fi
+    # Initialize dot_sage with some defaults
+    cp -R "$SAGE_ROOT/dot_sage/"* "$NEW_DOT_SAGE"
 fi
 
 # This is needed so that the Python webbrowser module can easily open the

@@ -128,7 +128,7 @@ $(cygwin-runtime-extras): $(cygwin-runtime)
 	cp -r $(CYGWIN_EXTRAS)/* $(ENV_RUNTIME_DIR)
 	echo "SAGE_VERSION=$(SAGE_VERSION)" > $(ENV_RUNTIME_DIR)/etc/sage-version
 	echo 'none /tmp usertemp binary,posix=0 0 0' >> $(ENV_RUNTIME_DIR)/etc/fstab
-	echo 'C:\Users /home ntfs binary,posix=1,acl 0 0' >> $(ENV_RUNTIME_DIR)/etc/fstab
+	echo 'db_home: /home/sage' >> $(ENV_RUNTIME_DIR)/etc/nsswitch.conf
 	@touch $@
 
 
