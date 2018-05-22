@@ -68,6 +68,7 @@ DisableWelcomePage=no
 DiskSpanning={#DiskSpanning}
 OutputDir={#OutputDir}
 OutputBaseFilename={#MyAppName}-{#MyAppVersion}
+PrivilegesRequired=lowest
 Compression={#Compression}
 SolidCompression=yes
 WizardImageFile=resources\sage-banner.bmp
@@ -131,17 +132,76 @@ Type: filesandordirs; Name: "{#Runtime}\dev\mqueue"
 [Icons]
 Name: "{app}\{#RunSageName}"; Filename: "{#Bin}\mintty.exe"; Parameters: "-t '{#RunSageTitle}' -i sagemath.ico {#RunSage}"; WorkingDir: "{app}"; Comment: "{#RunSageDoc}"; IconFilename: "{app}\sagemath.ico"
 Name: "{group}\{#RunSageName}"; Filename: "{#Bin}\mintty.exe"; Parameters: "-t '{#RunSageTitle}' -i sagemath.ico {#RunSage}"; WorkingDir: "{app}"; Comment: "{#RunSageDoc}"; IconFilename: "{app}\sagemath.ico"; Tasks: startmenu
-Name: "{commondesktop}\{#RunSageName}"; Filename: "{#Bin}\mintty.exe"; Parameters: "-t '{#RunSageTitle}' -i sagemath.ico {#RunSage}"; WorkingDir: "{app}"; Comment: "{#RunSageDoc}"; IconFilename: "{app}\sagemath.ico"; Tasks: desktop
+Name: "{code:GetDesktopPath}\{#RunSageName}"; Filename: "{#Bin}\mintty.exe"; Parameters: "-t '{#RunSageTitle}' -i sagemath.ico {#RunSage}"; WorkingDir: "{app}"; Comment: "{#RunSageDoc}"; IconFilename: "{app}\sagemath.ico"; Tasks: desktop
 
 Name: "{app}\{#RunSageShName}"; Filename: "{#Bin}\mintty.exe"; Parameters: "-t '{#RunSageShTitle}' -i sagemath.ico {#RunSageSh}"; WorkingDir: "{app}"; Comment: "{#RunSageShDoc}"; IconFilename: "{app}\sagemath.ico"
 Name: "{group}\{#RunSageShName}"; Filename: "{#Bin}\mintty.exe"; Parameters: "-t '{#RunSageShTitle}' -i sagemath.ico {#RunSageSh}"; WorkingDir: "{app}"; Comment: "{#RunSageShDoc}"; IconFilename: "{app}\sagemath.ico"; Tasks: startmenu
-Name: "{commondesktop}\{#RunSageShName}"; Filename: "{#Bin}\mintty.exe"; Parameters: "-t '{#RunSageShTitle}' -i sagemath.ico {#RunSageSh}"; WorkingDir: "{app}"; Comment: "{#RunSageShDoc}"; IconFilename: "{app}\sagemath.ico"; Tasks: desktop
+Name: "{code:GetDesktopPath}\{#RunSageShName}"; Filename: "{#Bin}\mintty.exe"; Parameters: "-t '{#RunSageShTitle}' -i sagemath.ico {#RunSageSh}"; WorkingDir: "{app}"; Comment: "{#RunSageShDoc}"; IconFilename: "{app}\sagemath.ico"; Tasks: desktop
 
 Name: "{app}\{#RunSageNbName}"; Filename: "{#Bin}\mintty.exe"; Parameters: "-t '{#RunSageNbTitle}' -i sagemath.ico {#RunSageNb}"; WorkingDir: "{app}"; Comment: "{#RunSageNbDoc}"; IconFilename: "{app}\sagemath.ico"
 Name: "{group}\{#RunSageNbName}"; Filename: "{#Bin}\mintty.exe"; Parameters: "-t '{#RunSageNbTitle}' -i sagemath.ico {#RunSageNb}"; WorkingDir: "{app}"; Comment: "{#RunSageNbDoc}"; IconFilename: "{app}\sagemath.ico"; Tasks: startmenu
-Name: "{commondesktop}\{#RunSageNbName}"; Filename: "{#Bin}\mintty.exe"; Parameters: "-t '{#RunSageNbTitle}' -i sagemath.ico {#RunSageNb}"; WorkingDir: "{app}"; Comment: "{#RunSageNbDoc}"; IconFilename: "{app}\sagemath.ico"; Tasks: desktop
+Name: "{code:GetDesktopPath}\{#RunSageNbName}"; Filename: "{#Bin}\mintty.exe"; Parameters: "-t '{#RunSageNbTitle}' -i sagemath.ico {#RunSageNb}"; WorkingDir: "{app}"; Comment: "{#RunSageNbDoc}"; IconFilename: "{app}\sagemath.ico"; Tasks: desktop
 
 [Code]
+var
+    UserInstall: Boolean;
+
+
+function GetDesktopPath(Param: String): String;
+begin
+    if UserInstall then
+    begin
+        Result := ExpandConstant('{userdesktop}');
+    end
+    else begin
+        Result := ExpandConstant('{commondesktop}');
+    end;
+end;
+
+
+function ProcessInstallModeSelectPage(Page: TWizardPage): Boolean;
+begin
+    if TInputOptionWizardPage(Page).CheckListBox.Checked[0] then
+    begin
+        WizardForm.DirEdit.Text := ExpandConstant('{localappdata}\{#SageGroupName}');
+        UserInstall := True;
+    end
+    else begin
+        WizardForm.DirEdit.Text := ExpandConstant('{pf}\{#SageGroupName}');
+        UserInstall := False;
+    end;
+
+    Result := True;
+end;
+
+
+procedure CreateInstallModeSelectPage();
+var
+    Page: TInputOptionWizardPage;
+begin
+    Page := CreateInputOptionPage(wpUserInfo, 'Install Mode Select',
+    'Install either for a single user or for all users on the system (requires Administrator privileges).', '', True, False);
+
+    Page.Add('Install just for the current user');
+    Page.Add('Install for all users (installer must be run with Administrator privileges)');
+
+    with Page do
+    begin
+        CheckListBox.Checked[0] := not IsAdminLoggedOn();
+        CheckListBox.Checked[1] := IsAdminLoggedOn();
+        CheckListBox.ItemEnabled[1] := IsAdminLoggedOn();
+        OnNextButtonClick := @ProcessInstallModeSelectPage;
+    end;
+end;
+
+
+procedure InitializeWizard();
+begin
+    UserInstall := not IsAdminLoggedOn();
+    CreateInstallModeSelectPage();
+end;
+
+
 procedure FixupSymlinks();
 var
     n: Integer;
