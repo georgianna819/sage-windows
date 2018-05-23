@@ -8,7 +8,7 @@ export SAGE_ROOT=/opt/sagemath-${SAGE_VERSION}
 
 # Mount the user's real home directory to /home/sage if not already done
 if [ ! -f "/etc/fstab.d/${USERNAME}" ]; then
-    "$SAGE_ROOT"/local/bin/sage-sethome
+    /usr/local/bin/sage-sethome
 fi
 
 # .sage migration--older versions of Sage for Windows put DOT_SAGE in
