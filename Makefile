@@ -1,6 +1,6 @@
 TARGETS=env-build env-runtime cygwin-build cygwin-runtime sage-build \
         sage-runtime cygwin-extras-runtime
-.PHONY: all $(TARGETS)
+.PHONY: all $(TARGETS) $(addprefix clean-,$(TARGETS)) clean-installer
 
 ############################ Configurable Variables ###########################
 
@@ -90,6 +90,9 @@ $(SAGE_INSTALLER): $(SOURCES) $(env-runtime) | $(DIST)
 	$(ISCC) /DSageVersion=$(SAGE_VERSION) /DSageArch=$(ARCH) \
 		/DEnvsDir="$(ENVS)" /DOutputDir="$(DIST)" $(SAGEMATH_ISS)
 
+clean-installer:
+	rm -f $(SAGE_INSTALLER)
+
 
 $(foreach target,$(TARGETS),$(eval $(target): $$($(target))))
 
@@ -98,9 +101,18 @@ $(env-runtime): $(cygwin-runtime) $(sage-runtime) $(cygwin-runtime-extras)
 	(cd $(ENV_RUNTIME_DIR) && find . -type l) > $(ENV_RUNTIME_DIR)/etc/symlinks.lst
 	@touch $@
 
+clean-env-runtime:
+	rm -f $(ENV_RUNTIME_DIR)/etc/*symlinks.lst
+	rm -f $(env-runtime)
+
 
 $(sage-runtime): $(SAGE_ROOT_RUNTIME)
 	@touch $@
+
+clean-sage-runtime:
+	rm -rf $(SAGE_ROOT_RUNTIME)
+	rm -f $(sage-runtime)
+
 
 $(SAGE_ROOT_RUNTIME): $(cygwin-runtime) $(sage-build)
 	[ -d $(dir $@) ] || mkdir $(dir $@)
@@ -115,6 +127,10 @@ $(SAGE_ROOT_RUNTIME): $(cygwin-runtime) $(sage-build)
 $(env-build): $(cygwin-build) $(sage-build)
 	@touch $@
 
+clean-env-build: clean-sage-build clean-cygwin-build
+	rm -f $(env-build)
+
+
 
 $(sage-build): $(cygwin-build) $(SAGE_STARTED)
 	SHELL=/bin/dash $(SUBCYG) "$(ENV_BUILD_DIR)" \
@@ -122,6 +138,10 @@ $(sage-build): $(cygwin-build) $(SAGE_STARTED)
 	$(SUBCYG) "$(ENV_BUILD_DIR)" \
 		"(cd $(SAGE_ROOT) && $(SAGE_ENVVARS) make doc)"
 	@touch $@
+
+clean-sage-build:
+	rm -rf $(SAGE_ROOT_BUILD)
+	rm -f $(sage-build)
 
 
 $(cygwin-runtime-extras): $(cygwin-runtime)
@@ -131,9 +151,22 @@ $(cygwin-runtime-extras): $(cygwin-runtime)
 	echo 'db_home: /home/sage' >> $(ENV_RUNTIME_DIR)/etc/nsswitch.conf
 	@touch $@
 
+# Right now the only effective way to roll back cygwin-runtime-extras
+# is to clean the entire runtime cygwin environment
+clean-cygwin-runtime-extras: clean-cygwin-runtime
+	rm -f $(cygwin-runtime-extras)
+
 
 $(STAMPS)/cygwin-%: | $(ENVS)/% $(STAMPS)
 	@touch $@
+
+clean-cygwin-build:
+	rm -rf $(ENV_BUILD_DIR)
+	rm -f $(cygwin-build)
+
+clean-cygwin-runtime:
+	rm -rf $(ENV_RUNTIME_DIR)
+	rm -f $(cygwin-runtime)
 
 
 .SECONDARY: $(ENV_BUILD_DIR) $(ENV_RUNTIME_DIR)
