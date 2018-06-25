@@ -145,8 +145,14 @@ Name: "{code:GetDesktopPath}\{#RunSageNbName}"; Filename: "{#Bin}\mintty.exe"; P
 [Code]
 var
     UserInstall: Boolean;
+    UserHomeDir: String;
+    InstallModeSelectPageID: Integer;
+    UserHomeDirSelectPageID: Integer;
 
 
+// This function is used above in the [Icons] section to get the correct
+// installation path for desktop icons depending on what installation mode
+// was selected
 function GetDesktopPath(Param: String): String;
 begin
     if UserInstall then
@@ -157,6 +163,9 @@ begin
         Result := ExpandConstant('{commondesktop}');
     end;
 end;
+
+
+// ******************* Custom Install Wizard Pages ***************************
 
 
 function ProcessInstallModeSelectPage(Page: TWizardPage): Boolean;
@@ -181,17 +190,59 @@ var
 begin
     Page := CreateInputOptionPage(wpUserInfo, 'Install Mode Select',
     'Install either for a single user or for all users on the system (requires Administrator privileges).', '', True, False);
+    InstallModeSelectPageID := Page.ID;
 
     Page.Add('Install just for the current user');
     Page.Add('Install for all users (installer must be run with Administrator privileges)');
 
+    UserInstall := Boolean(
+        StrToInt(
+            GetPreviousData('UserInstall', IntToStr(Integer(not IsAdminLoggedOn())))));
+
     with Page do
     begin
-        CheckListBox.Checked[0] := not IsAdminLoggedOn();
-        CheckListBox.Checked[1] := IsAdminLoggedOn();
+        CheckListBox.Checked[0] := UserInstall;
+        CheckListBox.Checked[1] := (not UserInstall);
         CheckListBox.ItemEnabled[1] := IsAdminLoggedOn();
         OnNextButtonClick := @ProcessInstallModeSelectPage;
     end;
+end;
+
+
+function ProcessUserHomeDirSelectPage(Page: TWizardPage): Boolean;
+begin
+    UserHomeDir := TInputDirWizardPage(Page).Values[0];
+    Result := True;
+end;
+
+
+procedure CreateUserHomeDirSelectPage();
+var
+    Page: TInputDirWizardPage;
+begin
+    Page := CreateInputDirPage(InstallModeSelectPageID, 'Select Sage home directory',
+    'Select the default directory that Sage will start in', '', False, '');
+    Page.Add('');
+    UserHomeDirSelectPageID := Page.ID;
+    with Page do
+    begin
+        Values[0] := ExpandConstant('{%USERPROFILE}');
+        OnNextButtonClick := @ProcessUserHomeDirSelectPage;
+    end;
+end;
+
+
+procedure RegisterPreviousData(PreviousDataKey: Integer);
+begin
+    SetPreviousData(PreviousDataKey, 'UserInstall', IntToStr(Integer(UserInstall)));
+end;
+
+
+function ShouldSkipPage(PageID: Integer): Boolean;
+begin
+    Result := False;
+    if (PageID = UserHomeDirSelectPageID) and (not UserInstall) then
+        Result := True;
 end;
 
 
@@ -199,6 +250,7 @@ procedure InitializeWizard();
 begin
     UserInstall := not IsAdminLoggedOn();
     CreateInstallModeSelectPage();
+    CreateUserHomeDirSelectPage();
 end;
 
 
