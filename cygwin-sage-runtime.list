@@ -2,6 +2,7 @@ base-files    	4.2-3
 bash          	4.3.42-4
 cygutils      	1.4.15-2
 cygwin        	2.6.0-1
+dos2unix        7.4.0-1
 gcc-core      	5.3.0-5
 gcc-fortran   	5.3.0-5
 gcc-g++       	5.3.0-5

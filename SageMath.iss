@@ -100,7 +100,7 @@ Name: desktop; Description: "Create &desktop icons"; GroupDescription: "Addition
 [Files]
 Source: "dot_sage\*"; DestDir: "{#SageRootWin}\dot_sage"; Flags: recursesubdirs ignoreversion
 Source: "{#Source}\*"; DestDir: "{#Runtime}"; Excludes: "{#SageExcludes}"; Flags: recursesubdirs ignoreversion
-Source: "resources\sagemath.ico"; DestDir: "{app}"; Flags: ignoreversion; AfterInstall: FixupSymlinks
+Source: "resources\sagemath.ico"; DestDir: "{app}"; Flags: ignoreversion; AfterInstall: PostInstall
 
 ; InnoSetup will not create empty directories found when including files
 ; recursively in the [Files] section, so any directories that must exist
@@ -232,7 +232,7 @@ var
 begin
     Page := CreateInputDirPage(InstallModeSelectPageID, 'Select Sage home directory',
     'Select the default directory that Sage will start in', '', False, '');
-    Page.Add('');
+    Page.Add('Sage will start with this folder as your working directory by default; you can also change this after installation using the sage-sethome command:');
     UserHomeDirSelectPageID := Page.ID;
     with Page do
     begin
@@ -284,7 +284,44 @@ begin
         WizardForm.FilenameLabel.Caption := Copy(filenam, 2, Length(filenam));
         WizardForm.ProgressGauge.Position := i;
         Exec(ExpandConstant('{sys}\attrib.exe'), '+S ' + filenam,
-                            ExpandConstant('{#Runtime}'), SW_HIDE,
-                            ewNoWait, resultCode);
+             ExpandConstant('{#Runtime}'), SW_HIDE, ewNoWait, resultCode);
     end;
+end;
+
+
+// In principle we should be able to run the sage-sethome script with the
+// just-installed bash.exe, but this seems to encounter insurmountable
+// problems with quoting or I'm not sure what else, so we essentially
+// reimplement that script here to write the appropriate /etc/fstab.d file.
+procedure SetHome();
+var
+    resultCode: Integer;
+    userHome: String;
+    fstabdFile: String;
+    fstabLine: String;
+    fstabLines: TArrayOfString;
+begin
+    fstabdFile := ExpandConstant('{#Runtime}\etc\fstab.d\') + GetUserNameString();
+    userHome := Copy(UserHomeDir, 1, Length(UserHomeDir));
+    StringChangeEx(userHome, ' ', '\040', True)
+    fstabLine := userHome + ' /home/sage ntfs binary,posix=1,user,acl 0 0';
+    SetArrayLength(fstabLines, 1);
+    fstabLines[0] := fstabLine;
+    SaveStringsToUTF8File(fstabdFile, fstabLines, False);
+    // The above nevertheless writes the file with a bunch of stupid
+    // ideosyncracies (most notably, a useless UTF-8 BOM) which confuse
+    // Cygwin; we run this final cleanup script to fix everything, ugh.
+    Exec(ExpandConstant('{#Bin}\dash.exe'),
+         '/usr/local/bin/_sage-complete-install.sh',
+         ExpandConstant('{#Runtime}'), 
+         SW_HIDE, ewNoWait, resultCode);
+    MsgBox(IntToStr(resultCode), mbInformation, MB_OK);
+end;
+
+
+procedure PostInstall();
+begin
+    FixupSymlinks();
+    if UserInstall then
+        SetHome();
 end;
