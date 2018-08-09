@@ -190,6 +190,10 @@ $(ENVS)/%-$(SAGE_VERSION)-$(ARCH): cygwin-sage-%-$(ARCH).list $(CYGWIN_SETUP)
 	# A bit of cleanup
 	rm -f $@/Cygwin*.{bat,ico}
 
+	# We should re-touch the relevant stamp file since the runtime
+	# environment may be updated
+	touch "$(STAMPS)/cygwin-$(subst $(ENVS)/,,$@)"
+
 
 $(SAGE_STARTED): $(SAGE_MAKEFILE)
 	$(SUBCYG) "$(ENV_BUILD_DIR)" \
