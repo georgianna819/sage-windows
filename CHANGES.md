@@ -28,6 +28,10 @@ Changelog for the Windows Installer
     `[DIRECTORY]` is the Windows path you'd like to set as the home
     directory for Sage.
 
+* Included ImageMagick in the distribution.  This is a dependency of some
+  functionality in Sage, such as for converting LaTeX to PNG images for
+  displaying in the Sage Notebook.
+
 
 0.3 (2017-12-15)
 ----------------

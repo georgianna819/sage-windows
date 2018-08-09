@@ -5,8 +5,10 @@ cygwin        	2.6.0-1
 gcc-core      	5.3.0-5
 gcc-fortran   	5.3.0-5
 gcc-g++       	5.3.0-5
+ghostscript     9.23-1
 grep          	2.25-1
 hostname      	3.12-1
+ImageMagick     6.9.9.11-3
 libX11_6      	1.6.4-1
 libXau6       	1.0.8-1
 libXdmcp6     	1.1.2-1
