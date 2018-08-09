@@ -38,7 +38,7 @@ fi
 DIR="$(cygpath -w -a "${DIR}")"
 SAFE_DIR="$(echo "${DIR}" | sed 's/ /\\040/g')"
 FSTAB="/etc/fstab.d/${USERNAME}"
-echo "${SAFE_DIR} /home/sage none bind" > "$FSTAB"
+echo "${SAFE_DIR} /home/sage ntfs binary,posix=1,usr,acl 0 0" > "$FSTAB"
 chmod 600 "$FSTAB"
 mount -a
 echo "Sage home directory set to '${DIR}'"
