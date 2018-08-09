@@ -41,4 +41,5 @@ make          	4.1-1
 python        	2.7.12-1
 rebase        	4.4.2-1
 sed           	4.2.2-3
+wget            1.17.1-2
 zlib0         	1.2.8-3
