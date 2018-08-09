@@ -7,6 +7,10 @@ TARGETS=env-build env-runtime cygwin-build cygwin-runtime sage-build \
 # Can be x86 or x86_64
 ARCH?=x86_64
 
+# Set to 1 to build a test version of the installer for testing the installer
+# itself itself; it excludes Sage but is faster to build and install
+SAGE_TEST_INSTALLER?=0
+
 SAGE_VERSION?=develop
 SAGE_BRANCH?=$(SAGE_VERSION)
 
@@ -88,6 +92,7 @@ all: $(SAGE_INSTALLER)
 $(SAGE_INSTALLER): $(SOURCES) $(env-runtime) | $(DIST)
 	cd $(CUDIR)
 	$(ISCC) /DSageVersion=$(SAGE_VERSION) /DSageArch=$(ARCH) \
+		/DSageTestInstaller=$(SAGE_TEST_INSTALLER) \
 		/DEnvsDir="$(ENVS)" /DOutputDir="$(DIST)" $(SAGEMATH_ISS)
 
 clean-installer:
