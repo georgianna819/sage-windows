@@ -127,6 +127,7 @@ $(SAGE_ROOT_RUNTIME): $(cygwin-runtime) $(sage-build)
 		src/build local/share/doc/sage/doctrees .git*)
 	SHELL=/bin/dash $(SUBCYG) "$(ENV_RUNTIME_DIR)" \
 		  "(cd $(SAGE_ROOT) && local/bin/sage-rebaseall.sh local)"
+	tools/sage-fixup-doc-symlinks "$(SAGE_ROOT_RUNTIME)/local/share/doc/sage/html"
 
 
 $(env-build): $(cygwin-build) $(sage-build)
