@@ -1,7 +1,7 @@
 Changelog for the Windows Installer
 ===================================
 
-0.4 (unreleased)
+0.4 (08-10-2018)
 ----------------
 
 * Added single-user installation mode as the default installation mode--now
