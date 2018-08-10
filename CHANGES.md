@@ -13,10 +13,10 @@ Changelog for the Windows Installer
 * Reworked how home directories are handled:
 
   * Now Sage runs under a single "home directory" that is named
-    "/home/sage".  For each user, "/home/sage" actually points by default to
-    their Windows profile directory (i.e. C:\Users\<Username>).  This is
+    `/home/sage`.  For each user, `/home/sage` actually points by default to
+    their Windows profile directory (i.e. `C:\Users\<Username>`).  This is
     consistent with previous versions of Sage for Windows, except that
-    "/home/sage/" is used instead of "/home/<Username>/" where <Username>
+    `/home/sage/` is used instead of `/home/<Username>/` where `<Username>`
     was your Windows username.  This choice is motivated by compatibility
     with some UNIX software that does not handle spaces or special
     characters in home directories.
