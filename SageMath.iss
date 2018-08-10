@@ -315,7 +315,6 @@ begin
          '/usr/local/bin/_sage-complete-install.sh',
          ExpandConstant('{#Runtime}'), 
          SW_HIDE, ewNoWait, resultCode);
-    MsgBox(IntToStr(resultCode), mbInformation, MB_OK);
 end;
 
 
