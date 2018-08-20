@@ -1,6 +1,13 @@
 Changelog for the Windows Installer
 ===================================
 
+0.4.1 (unreleased)
+------------------
+
+* Added some dependencies to the runtime environment that were necessary
+  for compiling Cython code at runtime to work (e.g. `cython()`).
+
+
 0.4 (2018-08-10)
 ----------------
 

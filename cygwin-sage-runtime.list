@@ -15,6 +15,7 @@ libXau6       	1.0.8-1
 libXdmcp6     	1.1.2-1
 libXpm4       	3.5.11-1
 libbz2_1      	1.0.6-2
+libcrypt-devel  2.1-1
 libcrypt0     	1.4-1
 libexpat1     	2.2.0-0
 libfontconfig1	2.12.1-1
@@ -26,6 +27,7 @@ libgmp10      	6.1.1-1
 libiconv2     	1.14-3
 libjbig2-2.0  	14
 libjpeg8      	1.5.0-1
+liblapack-devel 3.8.0-1
 liblapack0    	3.6.1-1
 liblzma5      	5.2.2-1
 libmpc3       	1.0.3-1
