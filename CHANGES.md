@@ -7,6 +7,9 @@ Changelog for the Windows Installer
 * Added some dependencies to the runtime environment that were necessary
   for compiling Cython code at runtime to work (e.g. `cython()`).
 
+* Fixed `sage -i` to work, at least in principle (not all optional packages
+  work yet, but one can at least install the ones that do work).
+
 
 0.4 (2018-08-10)
 ----------------
