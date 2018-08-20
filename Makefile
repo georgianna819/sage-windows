@@ -122,7 +122,7 @@ clean-sage-runtime:
 $(SAGE_ROOT_RUNTIME): $(cygwin-runtime) $(sage-build)
 	[ -d $(dir $@) ] || mkdir $(dir $@)
 	cp -r $(SAGE_ROOT_BUILD) $(dir $@)
-	(cd $@ && rm -rf bootstrap config* logs m4 \
+	(cd $@ && rm -rf bootstrap config.* logs \
 		upstream local/var/tmp/sage/build/* local/var/lock/* \
 		src/build local/share/doc/sage/doctrees .git*)
 	SHELL=/bin/dash $(SUBCYG) "$(ENV_RUNTIME_DIR)" \
