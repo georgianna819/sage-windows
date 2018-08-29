@@ -11,6 +11,8 @@ Changelog for the Windows Installer
   packages work yet, but one can at least install some of the ones that do
   work).
 
+* Fixed bug preventing `sage-sethome` from working properly.
+
 
 0.4 (2018-08-10)
 ----------------
