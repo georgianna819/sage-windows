@@ -121,10 +121,13 @@ clean-sage-runtime:
 
 $(SAGE_ROOT_RUNTIME): $(cygwin-runtime) $(sage-build)
 	[ -d $(dir $@) ] || mkdir $(dir $@)
-	cp -r $(SAGE_ROOT_BUILD) $(dir $@)
+	cp -rp $(SAGE_ROOT_BUILD) $(dir $@)
 	(cd $@ && rm -rf bootstrap config.* logs \
 		upstream local/var/tmp/sage/build/* local/var/lock/* \
 		src/build local/share/doc/sage/doctrees .git*)
+	# This shouldn't be necessary but it seems to help ensure that the
+	# main Makefile is newer than its prerequisites
+	touch "$(SAGE_ROOT_RUNTIME)/build/make/Makefile"
 	SHELL=/bin/dash $(SUBCYG) "$(ENV_RUNTIME_DIR)" \
 		  "(cd $(SAGE_ROOT) && local/bin/sage-rebaseall.sh local)"
 	tools/sage-fixup-doc-symlinks "$(SAGE_ROOT_RUNTIME)/local/share/doc/sage/html"
