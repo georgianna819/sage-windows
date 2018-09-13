@@ -19,9 +19,9 @@
 #endif
 
 #if SageTestInstaller == "1"
-  #define SageExcludes "\opt\*"
+  #define SageExcludes "\opt\*,\home\*"
 #else
-  #define SageExcludes ""
+  #define SageExcludes "\home\*"
 #endif
 
 #define MyAppVersion SageVersion
@@ -118,6 +118,7 @@ Source: "resources\sagemath.ico"; DestDir: "{app}"; Flags: ignoreversion; AfterI
 Name: "{#Runtime}\etc\fstab.d"; Permissions: users-modify
 Name: "{#Runtime}\dev\shm"; Permissions: users-modify
 Name: "{#Runtime}\dev\mqueue"; Permissions: users-modify
+Name: "{#Runtime}\home\sage"; Permissions: users-modify
 
 [UninstallDelete]
 Type: filesandordirs; Name: "{#Runtime}\etc\fstab.d"
