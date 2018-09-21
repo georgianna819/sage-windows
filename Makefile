@@ -106,8 +106,7 @@ $(env-runtime): $(cygwin-runtime) $(sage-runtime) $(cygwin-runtime-extras)
 	(cd $(ENV_RUNTIME_DIR) && find . -type l) > $(ENV_RUNTIME_DIR)/etc/symlinks.lst
 	@touch $@
 
-clean-env-runtime:
-	rm -f $(ENV_RUNTIME_DIR)/etc/*symlinks.lst
+clean-env-runtime: clean-cygwin-runtime
 	rm -f $(env-runtime)
 
 
@@ -168,7 +167,6 @@ $(cygwin-runtime-extras): $(cygwin-runtime)
 # Right now the only effective way to roll back cygwin-runtime-extras
 # is to clean the entire runtime cygwin environment
 clean-cygwin-runtime-extras: clean-cygwin-runtime
-	rm -f $(cygwin-runtime-extras)
 
 
 $(STAMPS)/cygwin-%: | $(ENVS)/% $(STAMPS)
@@ -178,9 +176,10 @@ clean-cygwin-build:
 	rm -rf $(ENV_BUILD_DIR)
 	rm -f $(cygwin-build)
 
-clean-cygwin-runtime:
+clean-cygwin-runtime: clean-sage-runtime
 	rm -rf $(ENV_RUNTIME_DIR)
 	rm -f $(cygwin-runtime)
+	rm -f $(cygwin-runtime-extras)
 
 
 .SECONDARY: $(ENV_BUILD_DIR) $(ENV_RUNTIME_DIR)
