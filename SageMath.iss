@@ -1,4 +1,5 @@
 #define MyAppName "SageMath"
+#define InstallerVersion "0.4.1"
 
 #ifndef SageVersion
   #error SageVersion must be defined--pass /DSageVersion=<version> to InnoSetup with the correct version
@@ -77,7 +78,7 @@ DisableProgramGroupPage=yes
 DisableWelcomePage=no
 DiskSpanning={#DiskSpanning}
 OutputDir={#OutputDir}
-OutputBaseFilename={#MyAppName}-{#MyAppVersion}
+OutputBaseFilename={#MyAppName}-{#MyAppVersion}-Installer-v{#InstallerVersion}
 PrivilegesRequired=lowest
 Compression={#Compression}
 SolidCompression=yes
