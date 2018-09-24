@@ -1,7 +1,7 @@
 Changelog for the Windows Installer
 ===================================
 
-0.4.1 (unreleased)
+0.4.1 (2018-09-24)
 ------------------
 
 * Added some dependencies to the runtime environment that were necessary
