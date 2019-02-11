@@ -40,7 +40,9 @@ libstdc++6    	5.4.0-1
 libtiff6      	4.0.6-1
 libwebp5      	0.4.4-1
 libxcb1       	1.12-1
+m4        		1.4.18-1
 make          	4.1-1
+perl           	5.26.3-1
 python        	2.7.12-1
 rebase        	4.4.2-1
 sed           	4.2.2-3
