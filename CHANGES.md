@@ -1,6 +1,14 @@
 Changelog for the Windows Installer
 ===================================
 
+0.4.2 (2019-02-11)
+------------------
+
+* Added the `m4` and `perl` packages (and by extension their dependencies)
+  to the runtime environment, since they appear to be needed when
+  installing optional packages.
+
+
 0.4.1 (2018-09-24)
 ------------------
 
