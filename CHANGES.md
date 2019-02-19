@@ -1,6 +1,12 @@
 Changelog for the Windows Installer
 ===================================
 
+0.4.3 (unreleased)
+------------------
+
+* Nothing changed yet.
+
+
 0.4.2 (2019-02-11)
 ------------------
 
