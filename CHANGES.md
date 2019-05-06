@@ -1,10 +1,15 @@
 Changelog for the Windows Installer
 ===================================
 
-0.4.3 (unreleased)
+0.4.3 (2019-04-18)
 ------------------
 
-* Nothing changed yet.
+* Not a change to the installer itself but to the build toolchain, allowing
+  version-specific patches to be applied after a Sage release.  From
+  time-to-time critical bugs are found and fixed in Sage only after an
+  official release.  And Sage's development process is not quick enough
+  about making new releases.  So we add the ability to include post-release
+  patches as needed.
 
 
 0.4.2 (2019-02-11)

@@ -37,6 +37,7 @@ cygwin-runtime-extras=$(STAMPS)/cygwin-runtime-extras-$(SAGE_VERSION)-$(ARCH)
 ###############################################################################
 
 # Resource paths
+PATCHES=patches
 CYGWIN_EXTRAS=cygwin_extras
 RESOURCES=resources
 DOT_SAGE=dot_sage
@@ -218,6 +219,13 @@ $(SAGE_CONFIGURE): | $(SAGE_ROOT_BUILD)
 $(SAGE_ROOT_BUILD): $(cygwin-build)
 	[ -d $(dir $(SAGE_ROOT_BUILD)) ] || mkdir $(dir $(SAGE_ROOT_BUILD))
 	$(SUBCYG) "$(ENV_BUILD_DIR)" "(cd /opt && git clone --single-branch --branch $(SAGE_BRANCH) $(SAGE_GIT) $(SAGE_ROOT))"
+	# Apply patches
+	if [ -d $(PATCHES)/$(SAGE_BRANCH) ]; then \
+		for patch in $(PATCHES)/$(SAGE_BRANCH)/*.patch; do \
+		    patch="$$(pwd)/$$patch"; \
+			(cd $(SAGE_ROOT_BUILD) && patch -p1 < $$patch); \
+		done; \
+	fi
 
 
 $(CYGWIN_SETUP): | $(DOWNLOAD)
