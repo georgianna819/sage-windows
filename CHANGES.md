@@ -1,7 +1,7 @@
 Changelog for the Windows Installer
 ===================================
 
-0.4.3 (2019-04-18)
+0.4.3 (2019-05-06)
 ------------------
 
 * Not a change to the installer itself but to the build toolchain, allowing
