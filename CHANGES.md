@@ -11,6 +11,19 @@ Changelog for the Windows Installer
   about making new releases.  So we add the ability to include post-release
   patches as needed.
 
+  * Added patch for giac to prevent possible hang in the Sage-Giac interface
+    (https://trac.sagemath.org/ticket/27385).
+
+  * Added several patches for stability in OpenBLAS.  Note, however, that
+    the current release does not use OpenBLAS, but rather just uses
+    Cygwin's default BLAS.  A future release will switch to OpenBLAS for
+    likely performance gains (https://trac.sagemath.org/ticket/27493
+    https://trac.sagemath.org/ticket/27509
+    https://trac.sagemath.org/ticket/27565).
+
+  * Added patch needed for psutil to work with Cygwin 3.0 on which this
+    build is based (https://trac.sagemath.org/ticket/27702).
+
 
 0.4.2 (2019-02-11)
 ------------------
