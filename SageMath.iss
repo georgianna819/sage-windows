@@ -1,5 +1,5 @@
 #define MyAppName "SageMath"
-#define InstallerVersion "0.4.3"
+#define InstallerVersion "0.4.4"
 
 #ifndef SageVersion
   #error SageVersion must be defined--pass /DSageVersion=<version> to InnoSetup with the correct version
