@@ -4,7 +4,20 @@ Changelog for the Windows Installer
 0.4.4 (unreleased)
 ------------------
 
-* Nothing changed yet.
+* Updates to use a few more Cygwin system packages rather than including
+  Sage-specific copies, including:
+
+  * bzip2
+  * libffi
+  * libpng
+  * patch
+  * pcre
+  * xz
+  * yasm
+  * zlib
+
+  We still build our own copies of MPIR and anything that depends on it,
+  as there are still too many bugs with the system GMP on Cygwin.
 
 
 0.4.3 (2019-05-06)
