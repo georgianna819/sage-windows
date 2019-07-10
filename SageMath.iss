@@ -125,6 +125,7 @@ Name: "{#Runtime}\home\sage"; Permissions: users-modify
 Type: filesandordirs; Name: "{#Runtime}\etc\fstab.d"
 Type: filesandordirs; Name: "{#Runtime}\dev\shm"
 Type: filesandordirs; Name: "{#Runtime}\dev\mqueue"
+Type: files; Name: "{#Runtime}\*.stackdump
 
 #define RunSage "/bin/bash --login -c '" + SageRootPosix + "/sage'"
 #define RunSageName "SageMath " + SageVersion
