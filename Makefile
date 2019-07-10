@@ -63,6 +63,12 @@ SAGE_ENVVARS:=\
 	SAGE_ATLAS_LIB=/lib \
 	MAKE=\"make -j$(N_CPUS)\"
 
+# TODO: This shoud be made dependent on the Sage version being built, as we may
+# need to change this from version to version.  In practice though we usually
+# just care about building the latest version.
+# Note: The latest version, 8.8, still does not work with system GMP.
+SAGE_CONFIGURE_FLAGS:=--with-blas=atlas --with-mp=mpir
+
 # Outputs representing success in the Sage build process
 SAGE_CONFIGURE=$(SAGE_ROOT_BUILD)/configure
 SAGE_MAKEFILE=$(SAGE_ROOT_BUILD)/build/make/Makefile
@@ -209,7 +215,7 @@ $(SAGE_STARTED): $(SAGE_MAKEFILE)
 
 
 $(SAGE_MAKEFILE): $(SAGE_CONFIGURE)
-	$(SUBCYG) "$(ENV_BUILD_DIR)" "(cd $(SAGE_ROOT) && ./configure --with-blas=atlas)"
+	$(SUBCYG) "$(ENV_BUILD_DIR)" "(cd $(SAGE_ROOT) && ./configure $(SAGE_CONFIGURE_FLAGS))"
 
 
 $(SAGE_CONFIGURE): | $(SAGE_ROOT_BUILD)
