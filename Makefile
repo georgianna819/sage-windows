@@ -1,6 +1,7 @@
 TARGETS=env-build env-runtime cygwin-build cygwin-runtime sage-build \
         sage-runtime cygwin-extras-runtime
-.PHONY: all $(TARGETS) $(addprefix clean-,$(TARGETS)) clean-installer
+.PHONY: all $(TARGETS) $(addprefix clean-,$(TARGETS)) clean-envs \
+	    clean-installer clean-all
 
 ############################ Configurable Variables ###########################
 
@@ -146,7 +147,7 @@ $(SAGE_ROOT_RUNTIME): $(cygwin-runtime) $(sage-build)
 $(env-build): $(cygwin-build) $(sage-build)
 	@touch $@
 
-clean-env-build: clean-sage-build clean-cygwin-build
+clean-env-build: clean-sage-build clean-cygwin-build clean-installer
 	rm -f $(env-build)
 
 
@@ -191,6 +192,11 @@ clean-cygwin-runtime: clean-sage-runtime
 	rm -rf $(ENV_RUNTIME_DIR)
 	rm -f $(cygwin-runtime)
 	rm -f $(cygwin-runtime-extras)
+
+clean-envs: clean-env-runtime clean-env-build
+
+
+clean-all: clean-envs clean-installer
 
 
 .SECONDARY: $(ENV_BUILD_DIR) $(ENV_RUNTIME_DIR)
