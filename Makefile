@@ -134,6 +134,10 @@ $(SAGE_ROOT_RUNTIME): $(cygwin-runtime) $(sage-build)
 	# This shouldn't be necessary but it seems to help ensure that the
 	# main Makefile is newer than its prerequisites
 	touch "$(SAGE_ROOT_RUNTIME)/build/make/Makefile"
+	# Strip debug symbols from exes and dlls, saving hundreds of MB
+	find "$(SAGE_ROOT_RUNTIME)" -type f \( -name '*.exe' -o -name '*.dll' \) \
+		-exec strip -g {} \;
+	# Re-rebase everything
 	SHELL=/bin/dash $(SUBCYG) "$(ENV_RUNTIME_DIR)" \
 		  "(cd $(SAGE_ROOT) && local/bin/sage-rebaseall.sh local)"
 	tools/sage-fixup-doc-symlinks "$(SAGE_ROOT_RUNTIME)/local/share/doc/sage/html"

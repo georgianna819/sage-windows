@@ -19,6 +19,9 @@ Changelog for the Windows Installer
   We still build our own copies of MPIR and anything that depends on it,
   as there are still too many bugs with the system GMP on Cygwin.
 
+* Debug symbols, which are not needed at runtime, are stripped from most
+  binaries, resulting in a noticeably smaller install footprint.
+
 
 0.4.3 (2019-05-06)
 ------------------
