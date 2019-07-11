@@ -4,8 +4,18 @@ Changelog for the Windows Installer
 0.5.0 (unreleased)
 ------------------
 
+* Debug symbols, which are not needed at runtime, are stripped from most
+  binaries, resulting in a noticeably smaller install footprint.  Now the
+  installer and the installation itself are smaller despite packing in more
+  features!
+
 * Includes a copy of `git` in the SageMath Shell, so no need to install a
   separate Git or integrate an existing Git for Windows installation.
+
+* Installing the HTML documentation is now optional.  Although some help
+  features won't work without it, it saves about 600 MB of installation
+  size, and if you have an internet connection you can still read the docs
+  at doc.sagemath.org.
 
 * Updates to use a few more Cygwin system packages rather than including
   Sage-specific copies, including:
@@ -21,9 +31,6 @@ Changelog for the Windows Installer
 
   We still build our own copies of MPIR and anything that depends on it,
   as there are still too many bugs with the system GMP on Cygwin.
-
-* Debug symbols, which are not needed at runtime, are stripped from most
-  binaries, resulting in a noticeably smaller install footprint.
 
 
 0.4.3 (2019-05-06)

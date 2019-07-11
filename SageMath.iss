@@ -56,8 +56,11 @@
 
 #define Runtime     "{app}\runtime"
 #define Bin         Runtime + "\bin"
-#define SageRootWin Runtime + "\opt\sagemath-" + MyAppVersion
+#define SageRoot "\opt\sagemath-" + MyAppVersion
+#define SageRootWin Runtime + SageRoot
 #define SageRootPosix "/opt/sagemath-" + MyAppVersion
+
+#define SageDoc SageRoot + "\local\share\doc\sage\html"
 
 [Setup]
 AppCopyright={#MyAppPublisher}
@@ -79,6 +82,7 @@ DisableWelcomePage=no
 DiskSpanning={#DiskSpanning}
 OutputDir={#OutputDir}
 OutputBaseFilename={#MyAppName}-{#MyAppVersion}-Installer-v{#InstallerVersion}
+OutputManifestFile=SageMath-Manifest.txt
 PrivilegesRequired=lowest
 Compression={#Compression}
 SolidCompression=yes
@@ -94,14 +98,23 @@ LicenseFile="{#Source}\opt\sagemath-{#SageVersion}\COPYING.txt"
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
+[Types]
+Name: "full"; Description: "Full installation"
+Name: "custom"; Description: "Custom installation"; Flags: iscustom
+
+[Components]
+Name: "sage"; Description: "SageMath Core"; Types: full custom; Flags: fixed
+Name: "sagedoc"; Description: "SageMath HTML Documentation"; Types: full
+
 [Tasks]
 Name: startmenu; Description: "Create &start menu icons"; GroupDescription: "Additional icons"
 Name: desktop; Description: "Create &desktop icons"; GroupDescription: "Additional icons"
 
 [Files]
-Source: "dot_sage\*"; DestDir: "{#SageRootWin}\dot_sage"; Flags: recursesubdirs ignoreversion
-Source: "{#Source}\*"; DestDir: "{#Runtime}"; Excludes: "{#SageExcludes}"; Flags: recursesubdirs ignoreversion
-Source: "resources\sagemath.ico"; DestDir: "{app}"; Flags: ignoreversion; AfterInstall: PostInstall
+Source: "dot_sage\*"; DestDir: "{#SageRootWin}\dot_sage"; Flags: recursesubdirs ignoreversion; Components: sage
+Source: "{#Source}\*"; DestDir: "{#Runtime}"; Excludes: "{#SageExcludes},{#SageDoc}"; Flags: recursesubdirs ignoreversion; Components: sage
+Source: "{#Source}{#SageDoc}\*"; DestDir: "{#Runtime}"; Flags: recursesubdirs ignoreversion; Components: sagedoc
+Source: "resources\sagemath.ico"; DestDir: "{app}"; Flags: ignoreversion; AfterInstall: PostInstall; Components: sage
 
 ; InnoSetup will not create empty directories found when including files
 ; recursively in the [Files] section, so any directories that must exist
@@ -125,7 +138,7 @@ Name: "{#Runtime}\home\sage"; Permissions: users-modify
 Type: filesandordirs; Name: "{#Runtime}\etc\fstab.d"
 Type: filesandordirs; Name: "{#Runtime}\dev\shm"
 Type: filesandordirs; Name: "{#Runtime}\dev\mqueue"
-Type: files; Name: "{#Runtime}\*.stackdump
+Type: files; Name: "{#Runtime}\*.stackdump"
 
 #define RunSage "/bin/bash --login -c '" + SageRootPosix + "/sage'"
 #define RunSageName "SageMath " + SageVersion
