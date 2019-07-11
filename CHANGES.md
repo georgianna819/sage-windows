@@ -1,7 +1,7 @@
 Changelog for the Windows Installer
 ===================================
 
-0.4.4 (unreleased)
+0.5.0 (unreleased)
 ------------------
 
 * Updates to use a few more Cygwin system packages rather than including
