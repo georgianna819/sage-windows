@@ -1,7 +1,7 @@
 Changelog for the Windows Installer
 ===================================
 
-0.5.0 (unreleased)
+0.5.0 (2019-07-11)
 ------------------
 
 * Debug symbols, which are not needed at runtime, are stripped from most
