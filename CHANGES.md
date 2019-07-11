@@ -4,6 +4,9 @@ Changelog for the Windows Installer
 0.5.0 (unreleased)
 ------------------
 
+* Includes a copy of `git` in the SageMath Shell, so no need to install a
+  separate Git or integrate an existing Git for Windows installation.
+
 * Updates to use a few more Cygwin system packages rather than including
   Sage-specific copies, including:
 
