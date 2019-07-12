@@ -21,6 +21,9 @@ NEW_DOT_SAGE="${HOME}/.sage"
 if [ ! -d "$NEW_DOT_SAGE" ]; then
     if [ -d "$OLD_DOT_SAGE" ]; then
         mv "$OLD_DOT_SAGE" "$NEW_DOT_SAGE"
+    else
+        # Else create an empty directory to copy into
+        mkdir "$NEW_DOT_SAGE"
     fi
     # Initialize dot_sage with some defaults
     cp -R "$SAGE_ROOT/dot_sage/"* "$NEW_DOT_SAGE"

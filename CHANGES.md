@@ -8,6 +8,11 @@ Changelog for the Windows Installer
 
 * Include a copy of the `nano` editor, for use with `git`.
 
+* Fixed initialization of the `.sage` directory on new installs, ensuring
+  that the default config files are copied to the correct locations.  This
+  fixes a bug with the default IPython terminal color scheme not being set
+  correctly.
+
 
 0.5.0 (2019-07-11)
 ------------------
