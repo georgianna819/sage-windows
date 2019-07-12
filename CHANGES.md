@@ -1,7 +1,7 @@
 Changelog for the Windows Installer
 ===================================
 
-0.5.1 (unreleased)
+0.5.1 (2019-07-12)
 ------------------
 
 * Fixed installation path of the HTML documentation.
