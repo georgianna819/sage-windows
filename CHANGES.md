@@ -6,6 +6,8 @@ Changelog for the Windows Installer
 
 * Fixed installation path of the HTML documentation.
 
+* Include a copy of the `nano` editor, for use with `git`.
+
 
 0.5.0 (2019-07-11)
 ------------------
