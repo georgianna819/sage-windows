@@ -113,7 +113,7 @@ Name: desktop; Description: "Create &desktop icons"; GroupDescription: "Addition
 [Files]
 Source: "dot_sage\*"; DestDir: "{#SageRootWin}\dot_sage"; Flags: recursesubdirs ignoreversion; Components: sage
 Source: "{#Source}\*"; DestDir: "{#Runtime}"; Excludes: "{#SageExcludes},{#SageDoc}"; Flags: recursesubdirs ignoreversion; Components: sage
-Source: "{#Source}{#SageDoc}\*"; DestDir: "{#Runtime}"; Flags: recursesubdirs ignoreversion; Components: sagedoc
+Source: "{#Source}{#SageDoc}\*"; DestDir: "{#Runtime}{#SageDoc}"; Flags: recursesubdirs ignoreversion; Components: sagedoc
 Source: "resources\sagemath.ico"; DestDir: "{app}"; Flags: ignoreversion; AfterInstall: PostInstall; Components: sage
 
 ; InnoSetup will not create empty directories found when including files
