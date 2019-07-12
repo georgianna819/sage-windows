@@ -30,5 +30,9 @@ fi
 # system browser through Cygwin
 export BROWSER=cygstart
 
+# Set the default editor to nano; best for beginners.  More advanced users
+# should change this in their `.profile`.
+export EDITOR=nano
+
 # See https://github.com/embray/sage-windows/issues/12
 export PYTHONWARNINGS="ignore:not adding directory '' to sys.path"
