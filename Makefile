@@ -14,6 +14,7 @@ SAGE_TEST_INSTALLER?=0
 
 SAGE_VERSION?=develop
 SAGE_BRANCH?=$(SAGE_VERSION)
+INSTALLER_VERSION=$(shell cat version.txt)
 
 # Output paths
 DIST?=dist
@@ -85,7 +86,7 @@ CYGWIN_SETUP=$(DOWNLOAD)/$(CYGWIN_SETUP_NAME)
 CYGWIN_SETUP_URL=https://cygwin.com/$(CYGWIN_SETUP_NAME)
 CYGWIN_MIRROR=http://mirrors.kernel.org/sourceware/cygwin/
 
-SAGE_INSTALLER=$(DIST)/SageMath-$(SAGE_VERSION).exe
+SAGE_INSTALLER=$(DIST)/SageMath-$(SAGE_VERSION)-v$(INSTALLER_VERSION).exe
 
 TOOLS=tools
 SUBCYG=$(TOOLS)/subcyg
@@ -100,6 +101,7 @@ all: $(SAGE_INSTALLER)
 $(SAGE_INSTALLER): $(SOURCES) $(env-runtime) | $(DIST)
 	cd $(CUDIR)
 	$(ISCC) /DSageVersion=$(SAGE_VERSION) /DSageArch=$(ARCH) \
+		/DInstallerVersion=$(INSTALLER_VERSION) \
 		/DSageTestInstaller=$(SAGE_TEST_INSTALLER) \
 		/DEnvsDir="$(ENVS)" /DOutputDir="$(DIST)" $(SAGEMATH_ISS)
 
