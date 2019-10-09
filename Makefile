@@ -55,21 +55,24 @@ SAGE_ROOT_RUNTIME=$(ENV_RUNTIME_DIR)$(SAGE_ROOT)
 
 N_CPUS=$(shell cat /proc/cpuinfo | grep '^processor' | wc -l)
 
-# Note: Be very careful about quoting here; we need literal
+# TODO: These variables should be made dependent on the Sage version being
+# built, as we may need to change this from version to version.  In practice
+# though we usually just care about building the latest version.
+# NOTE: The latest version, 8.8, still does not work with system GMP.
+SAGE_CONFIGURE_FLAGS:=--with-blas=atlas --with-mp=mpir
+
+# NOTE: Be very careful about quoting here; we need literal
 # quotes or else they will be stripped when exec'ing bash
+# NOTE: FFLAS_FFPACK_CONFIGURE is needed to work around a regression introduced
+# in Sage 8.9: https://trac.sagemath.org/ticket/27444#comment:34
 SAGE_ENVVARS:=\
 	SAGE_NUM_THREADS=$(N_CPUS) \
 	SAGE_INSTALL_CCACHE=yes \
 	CCACHE_DIR=\"$(HOME)/.ccache\" \
 	SAGE_FAT_BINARY=yes \
 	SAGE_ATLAS_LIB=/lib \
+    FFLAS_FFPACK_CONFIGURE=--disable-openmp \
 	MAKE=\"make -j$(N_CPUS)\"
-
-# TODO: This shoud be made dependent on the Sage version being built, as we may
-# need to change this from version to version.  In practice though we usually
-# just care about building the latest version.
-# Note: The latest version, 8.8, still does not work with system GMP.
-SAGE_CONFIGURE_FLAGS:=--with-blas=atlas --with-mp=mpir
 
 # Outputs representing success in the Sage build process
 SAGE_CONFIGURE=$(SAGE_ROOT_BUILD)/configure
