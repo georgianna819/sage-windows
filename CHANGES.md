@@ -1,6 +1,13 @@
 Changelog for the Windows Installer
 ===================================
 
+0.5.2 (unreleased)
+------------------
+
+* Added patch from SageMath 9.0 to builds of SageMath 8.9 to fix support for
+  threejs plots in Firefox on Windows.
+
+
 0.5.1 (2019-07-12)
 ------------------
 
