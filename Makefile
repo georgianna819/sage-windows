@@ -59,7 +59,7 @@ N_CPUS=$(shell cat /proc/cpuinfo | grep '^processor' | wc -l)
 # built, as we may need to change this from version to version.  In practice
 # though we usually just care about building the latest version.
 # NOTE: The latest version, 8.8, still does not work with system GMP.
-SAGE_CONFIGURE_FLAGS:=--with-blas=atlas --with-mp=mpir
+override SAGE_CONFIGURE_FLAGS:=--with-blas=atlas --with-mp=mpir $(SAGE_CONFIGURE_FLAGS)
 
 # NOTE: Be very careful about quoting here; we need literal
 # quotes or else they will be stripped when exec'ing bash
