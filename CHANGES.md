@@ -1,7 +1,7 @@
 Changelog for the Windows Installer
 ===================================
 
-0.5.2 (unreleased)
+0.5.2 (2020-01-08)
 ------------------
 
 * Added patch from SageMath 9.0 to builds of SageMath 8.9 to fix support for
