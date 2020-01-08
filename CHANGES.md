@@ -1,6 +1,12 @@
 Changelog for the Windows Installer
 ===================================
 
+0.5.3 (unreleased)
+------------------
+
+* Nothing changed yet.
+
+
 0.5.2 (2020-01-08)
 ------------------
 
