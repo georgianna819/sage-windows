@@ -59,7 +59,7 @@ N_CPUS=$(shell cat /proc/cpuinfo | grep '^processor' | wc -l)
 # built, as we may need to change this from version to version.  In practice
 # though we usually just care about building the latest version.
 # NOTE: The latest version, 8.8, still does not work with system GMP.
-override SAGE_CONFIGURE_FLAGS:=--with-blas=atlas --with-mp=mpir $(SAGE_CONFIGURE_FLAGS)
+override SAGE_CONFIGURE_FLAGS:=--with-mp=mpir $(SAGE_CONFIGURE_FLAGS)
 
 # NOTE: Be very careful about quoting here; we need literal
 # quotes or else they will be stripped when exec'ing bash
@@ -70,7 +70,6 @@ SAGE_ENVVARS:=\
 	SAGE_INSTALL_CCACHE=yes \
 	CCACHE_DIR=\"$(HOME)/.ccache\" \
 	SAGE_FAT_BINARY=yes \
-	SAGE_ATLAS_LIB=/lib \
     FFLAS_FFPACK_CONFIGURE=--disable-openmp \
 	MAKE=\"make -j$(N_CPUS)\"
 
