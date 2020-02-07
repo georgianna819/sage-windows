@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Ensure job control is enabled
 set -o monitor
 
 if [ -z "$SHELL" ]; then
@@ -13,16 +14,33 @@ cmdpath=$(dirname $(which cmd))
 subcyg_root=${1%/}
 shift
 
-trap 'rm -f "$subcyg_root$outtmp"' EXIT
+trap 'rm -f "$subcyg_root$outtmp" "$subcyg_root$pidtmp"' EXIT
 
-outtmp=$(mktemp)
-rm -f "$outtmp"
+tmpfile_name() {
+    tmp=$(mktemp)
+    rm -f "$tmp"
+    echo "$tmp"
+}
 
+outtmp=$(tmpfile_name)
+pidtmp=$(tmpfile_name)
+
+clean_env="$env -i PATH=$cmdpath"
+subcyg_shell="$clean_env $cygstart --wait --hide ${subcyg_root}$SHELL"
+
+on_interrupt() {
+    # Use a second subcyg shell to forward the SIGINT through to the first
+    # subcyg, interrupting whatever process it's running
+    if [ -e "$subcyg_root$pidtmp" ]; then
+        $subcyg_shell -l -c "'""kill -- -$(cat "$subcyg_root$pidtmp")""'"
+    fi
+    exit $(kill -l SIGINT)
+}
+
+trap 'on_interrupt' INT
 # NOTE: Have to be *very* careful about quoting everything after the -c
 # This does not yet cover all cases
-$env -i PATH="$cmdpath" \
-    $cygstart --wait --showminnoactive \
-    ${subcyg_root}$SHELL -l -c "'""$@"' >'$outtmp' 2>&1'"'" &
+$subcyg_shell -l -c "'""$@"' >'$outtmp' 2>&1 & cat /proc/$!/pgid >'$pidtmp'; wait $!'"'" &
 pid=$!
 
 # We can't simply do a fd redirect from the temp file to console this script is
@@ -30,4 +48,11 @@ pid=$!
 # other.  In other words, this Cygwin can't simply follow writes to outtmp.  So
 # instead we just watch it with tail
 tail -F --pid=$pid "$subcyg_root$outtmp" 2>/dev/null
-exit $(wait $pid)
+if [ $? -eq 130 ]; then
+    # tail was interrupted by Ctrl-C, so treat this as though the
+    # wrapped command were terminated as well.
+    on_interrupt
+fi
+
+wait $pid
+exit $?
