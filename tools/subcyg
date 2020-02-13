@@ -40,18 +40,23 @@ on_interrupt() {
 trap 'on_interrupt' INT
 # NOTE: Have to be *very* careful about quoting everything after the -c
 # This does not yet cover all cases
-$subcyg_shell -l -c "'""$@"' >'$outtmp' 2>&1 & cat /proc/$!/pgid >'$pidtmp'; wait $!'"'" &
+$subcyg_shell -l -c "'(""$@"') >'$outtmp' 2>&1 & cat /proc/$!/pgid >'$pidtmp'; wait $!'"'" &
 pid=$!
 
 # We can't simply do a fd redirect from the temp file to console this script is
 # running in, since they're in different Cygwins that don't know about each
 # other.  In other words, this Cygwin can't simply follow writes to outtmp.  So
 # instead we just watch it with tail
-tail -F --pid=$pid "$subcyg_root$outtmp" 2>/dev/null
-if [ $? -eq 130 ]; then
-    # tail was interrupted by Ctrl-C, so treat this as though the
-    # wrapped command were terminated as well.
-    on_interrupt
+#
+# Some commands don't produce any output, so also ensure that the output file
+# exists first.
+if [ -f "$subcyg_root$outtmp" ]; then
+    tail -F --pid=$pid "$subcyg_root$outtmp" 2>/dev/null
+    if [ $? -eq 130 ]; then
+        # tail was interrupted by Ctrl-C, so treat this as though the
+        # wrapped command were terminated as well.
+        on_interrupt
+    fi
 fi
 
 wait $pid

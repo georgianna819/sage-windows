@@ -150,7 +150,7 @@ $(SAGE_ROOT_RUNTIME): $(cygwin-runtime) $(sage-build)
 		-exec strip -g {} \;
 	# Re-rebase everything
 	SHELL=/bin/dash $(SUBCYG) "$(ENV_RUNTIME_DIR)" \
-		  "(cd $(SAGE_ROOT) && local/bin/sage-rebaseall.sh local)"
+		  "cd $(SAGE_ROOT) && local/bin/sage-rebaseall.sh local"
 	tools/sage-fixup-doc-symlinks "$(SAGE_ROOT_RUNTIME)/local/share/doc/sage/html"
 
 
@@ -164,9 +164,9 @@ clean-env-build: clean-sage-build clean-cygwin-build clean-installer
 
 $(sage-build): $(cygwin-build) $(SAGE_STARTED)
 	SHELL=/bin/dash $(SUBCYG) "$(ENV_BUILD_DIR)" \
-		  "(cd $(SAGE_ROOT) && local/bin/sage-rebaseall.sh local)"
+		  "cd $(SAGE_ROOT) && local/bin/sage-rebaseall.sh local"
 	$(SUBCYG) "$(ENV_BUILD_DIR)" \
-		"(cd $(SAGE_ROOT) && $(SAGE_ENVVARS) make doc)"
+		"cd $(SAGE_ROOT) && $(SAGE_ENVVARS) make doc"
 	@touch $@
 
 clean-sage-build:
@@ -231,20 +231,20 @@ $(ENVS)/%-$(SAGE_VERSION)-$(ARCH): cygwin-sage-%-$(ARCH).list $(CYGWIN_SETUP)
 
 $(SAGE_STARTED): $(SAGE_MAKEFILE)
 	$(SUBCYG) "$(ENV_BUILD_DIR)" \
-		"(cd $(SAGE_ROOT) && $(SAGE_ENVVARS) make start)"
+		"cd $(SAGE_ROOT) && $(SAGE_ENVVARS) make start"
 
 
 $(SAGE_MAKEFILE): $(SAGE_CONFIGURE)
-	$(SUBCYG) "$(ENV_BUILD_DIR)" "(cd $(SAGE_ROOT) && ./configure $(SAGE_CONFIGURE_FLAGS))"
+	$(SUBCYG) "$(ENV_BUILD_DIR)" "cd $(SAGE_ROOT) && ./configure $(SAGE_CONFIGURE_FLAGS)"
 
 
 $(SAGE_CONFIGURE): | $(SAGE_ROOT_BUILD)
-	$(SUBCYG) "$(ENV_BUILD_DIR)" "(cd $(SAGE_ROOT) && make configure)"
+	$(SUBCYG) "$(ENV_BUILD_DIR)" "cd $(SAGE_ROOT) && make configure"
 
 
 $(SAGE_ROOT_BUILD): $(cygwin-build)
 	[ -d $(dir $(SAGE_ROOT_BUILD)) ] || mkdir $(dir $(SAGE_ROOT_BUILD))
-	$(SUBCYG) "$(ENV_BUILD_DIR)" "(cd /opt && git clone --single-branch --branch $(SAGE_BRANCH) $(SAGE_GIT) $(SAGE_ROOT))"
+	$(SUBCYG) "$(ENV_BUILD_DIR)" "cd /opt && git clone --single-branch --branch $(SAGE_BRANCH) $(SAGE_GIT) $(SAGE_ROOT)"
 	# Apply patches
 	if [ -d $(PATCHES)/$(SAGE_BRANCH) ]; then \
 		for patch in $(PATCHES)/$(SAGE_BRANCH)/*.patch; do \
