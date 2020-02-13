@@ -137,21 +137,8 @@ clean-sage-runtime:
 $(SAGE_ROOT_RUNTIME): $(cygwin-runtime) $(sage-build)
 	[ -d $(dir $@) ] || mkdir $(dir $@)
 	cp -rp $(SAGE_ROOT_BUILD) $(dir $@)
-	(cd $@ && rm -rf bootstrap config.* logs \
-		upstream local/var/tmp/sage/build/* local/var/lock/* \
-		src/build local/share/doc/sage/doctrees .git*)
-	# This shouldn't be necessary but it seems to help ensure that the
-	# main Makefile is newer than its prerequisites
-	touch "$(SAGE_ROOT_RUNTIME)/build/make/Makefile"
-	# Delete a number of static libraries that are not needed for any
-	# reason at runtime (and ideally should not be intalled at all if
-	# unnecessary)
-	find "$(SAGE_ROOT_RUNTIME)/local/lib" \
-		\( -type f -a -name '*.a' -a ! -name '*.dll.a' \) \
-		-exec rm -f {} \;
-	# Strip debug symbols from exes and dlls, saving hundreds of MB
-	find "$(SAGE_ROOT_RUNTIME)" -type f \( -name '*.exe' -o -name '*.dll' \) \
-		-exec strip -g {} \;
+	# Prepare / compactify runtime environment
+	$(TOOLS)/sage-prep-runtime "$(SAGE_ROOT_RUNTIME)"
 	# Re-rebase everything
 	SHELL=/bin/dash $(SUBCYG) "$(ENV_RUNTIME_DIR)" \
 		  "cd $(SAGE_ROOT) && local/bin/sage-rebaseall.sh local"
