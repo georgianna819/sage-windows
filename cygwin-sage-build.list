@@ -5,6 +5,7 @@ binutils                  2.25-4
 bzip2                     1.0.6-2
 ca-certificates           2.10-1
 ccache                    3.1.9-2
+cmake                     3.14.5-1
 coreutils                 8.25-1
 csih                      0.9.9-1
 cygrunsrv                 1.62-1
