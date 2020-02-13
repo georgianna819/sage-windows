@@ -7,7 +7,7 @@ source /etc/sage-version
 export SAGE_ROOT=/opt/sagemath-${SAGE_VERSION}
 
 # Mount the user's real home directory to /home/sage if not already done
-if [ ! -f "/etc/fstab.d/${USERNAME}" ]; then
+if [ -n "${USERNAME}" -a ! -f "/etc/fstab.d/${USERNAME}" ]; then
     /usr/local/bin/sage-sethome
 fi
 

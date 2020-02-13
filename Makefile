@@ -175,15 +175,8 @@ clean-sage-build:
 
 
 $(cygwin-runtime-extras): $(cygwin-runtime)
-	cp -r $(CYGWIN_EXTRAS)/* $(ENV_RUNTIME_DIR)
-	echo "SAGE_VERSION=$(SAGE_VERSION)" > $(ENV_RUNTIME_DIR)/etc/sage-version
-	echo 'none /tmp usertemp binary,posix=0 0 0' >> $(ENV_RUNTIME_DIR)/etc/fstab
-	echo 'db_home: /home/sage' >> $(ENV_RUNTIME_DIR)/etc/nsswitch.conf
-	# Set the package download cache to something sensible; otherwise it
-	# will hard-code the package download cache used when building the
-	# environment in the installer, which is not what we want
-	# See https://github.com/sagemath/sage-windows/issues/24
-	sed -i '/^last-cache/{n;s|.*|\t/tmp|;}' "$(ENV_RUNTIME_DIR)"/etc/setup/setup.rc
+	$(TOOLS)/sage-prep-runtime-extras "$(ENV_RUNTIME_DIR)" "$(CYGWIN_EXTRAS)" \
+		"$(SAGE_VERSION)"
 	@touch $@
 
 # Right now the only effective way to roll back cygwin-runtime-extras

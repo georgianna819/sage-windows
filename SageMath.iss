@@ -324,8 +324,9 @@ begin
     userHome := Copy(UserHomeDir, 1, Length(UserHomeDir));
     StringChangeEx(userHome, ' ', '\040', True)
     fstabLine := userHome + ' /home/sage ntfs binary,posix=1,user,acl 0 0';
-    SetArrayLength(fstabLines, 1);
+    SetArrayLength(fstabLines, 2);
     fstabLines[0] := fstabLine;
+    fstabLines[1] := 'none /tmp usertemp binary,posix=0 0 0';
     SaveStringsToUTF8File(fstabdFile, fstabLines, False);
     // The above nevertheless writes the file with a bunch of stupid
     // ideosyncracies (most notably, a useless UTF-8 BOM) which confuse
