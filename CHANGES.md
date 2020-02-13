@@ -4,7 +4,7 @@ Changelog for the Windows Installer
 0.6.0 (unreleased)
 ------------------
 
-* Nothing changed yet.
+* Improved support for installing additional optional packages.
 
 
 0.5.2 (2020-01-08)
