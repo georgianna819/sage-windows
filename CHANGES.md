@@ -4,6 +4,15 @@ Changelog for the Windows Installer
 0.6.0 (unreleased)
 ------------------
 
+* The following optional packages, and their associated Sage extensions are
+  now come pre-installed by default:
+
+  * bliss
+  * coxeter3
+  * mcqd
+  * primecount
+  * tdlib
+
 * Downgraded Cygwin version in order to fix an issue with running external
   Windows programs from Sage (in particular, this caused problems when
   running external LaTeX distributions (#42).

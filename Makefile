@@ -73,6 +73,8 @@ SAGE_ENVVARS:=\
     FFLAS_FFPACK_CONFIGURE=--disable-openmp \
 	MAKE=\"make -j$(N_CPUS)\"
 
+SAGE_OPTIONAL_PACKAGES=bliss coxeter3 mcqd primecount tdlib
+
 # Outputs representing success in the Sage build process
 SAGE_CONFIGURE=$(SAGE_ROOT_BUILD)/configure
 SAGE_MAKEFILE=$(SAGE_ROOT_BUILD)/build/make/Makefile
@@ -219,6 +221,10 @@ $(ENVS)/%-$(SAGE_VERSION)-$(ARCH): cygwin-sage-%-$(ARCH).list $(CYGWIN_SETUP)
 $(SAGE_STARTED): $(SAGE_MAKEFILE)
 	$(SUBCYG) "$(ENV_BUILD_DIR)" \
 		"cd $(SAGE_ROOT) && $(SAGE_ENVVARS) make start"
+	# Install pre-installed optional packages and run make build again to
+	# intall sagelib optional extensions that use those packages
+	$(SUBCYG) "$(ENV_BUILD_DIR)" \
+		"cd $(SAGE_ROOT) && $(SAGE_ENVVARS) ./sage -i $(SAGE_OPTIONAL_PACKAGES) && make build"
 
 
 $(SAGE_MAKEFILE): $(SAGE_CONFIGURE)
