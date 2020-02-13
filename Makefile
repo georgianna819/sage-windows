@@ -87,6 +87,10 @@ CYGWIN_SETUP_NAME=setup-$(ARCH).exe
 CYGWIN_SETUP=$(DOWNLOAD)/$(CYGWIN_SETUP_NAME)
 CYGWIN_SETUP_URL=https://cygwin.com/$(CYGWIN_SETUP_NAME)
 CYGWIN_MIRROR=http://mirrors.kernel.org/sourceware/cygwin/
+CYGWIN_LOCAL_MIRROR=cygwin_mirror/
+ifeq (,$(wildcard $(CYGWIN_LOCAL_MIRROR)))
+CYGWIN_LOCAL_MIRROR=$(CYGWIN_MIRROR)
+endif
 
 SAGE_INSTALLER=$(DIST)/SageMath-$(SAGE_VERSION)-v$(INSTALLER_VERSION).exe
 
@@ -177,6 +181,8 @@ clean-sage-build:
 $(cygwin-runtime-extras): $(cygwin-runtime)
 	$(TOOLS)/sage-prep-runtime-extras "$(ENV_RUNTIME_DIR)" "$(CYGWIN_EXTRAS)" \
 		"$(SAGE_VERSION)"
+	# Set apt-cyg to use a non-local mirror in the runtime env
+	$(SUBCYG) "$(ENV_RUNTIME_DIR)" "apt-cyg mirror $(CYGWIN_MIRROR)"
 	@touch $@
 
 # Right now the only effective way to roll back cygwin-runtime-extras
@@ -204,11 +210,12 @@ clean-all: clean-envs clean-installer
 
 .SECONDARY: $(ENV_BUILD_DIR) $(ENV_RUNTIME_DIR)
 $(ENVS)/%-$(SAGE_VERSION)-$(ARCH): cygwin-sage-%-$(ARCH).list $(CYGWIN_SETUP)
-	"$(CYGWIN_SETUP)" --site $(CYGWIN_MIRROR) \
-		--local-package-dir "$$(cygpath -w -a $(DOWNLOAD))" \
+	"$(CYGWIN_SETUP)" --site $(CYGWIN_LOCAL_MIRROR) \
+		--local-install --local-package-dir "$$(cygpath -w -a .)" \
 		--root "$$(cygpath -w -a $@)" \
 		--arch $(ARCH) --no-admin --no-shortcuts --quiet-mode \
-		--packages $$($(TOOLS)/setup-package-list $<)
+		--packages $$($(TOOLS)/setup-package-list $<) \
+		$(CYGWIN_SETUP_FLAGS)
 	# Install symlinks for CCACHE
 	if [ -x $@/usr/bin/ccache ]; then \
 		ln -s /usr/bin/ccache $@/usr/local/bin/gcc; \
