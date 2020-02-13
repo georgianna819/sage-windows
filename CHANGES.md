@@ -1,7 +1,7 @@
 Changelog for the Windows Installer
 ===================================
 
-0.6.0 (unreleased)
+0.6.0 (2020-02-13)
 ------------------
 
 * The following optional packages, and their associated Sage extensions are
@@ -13,11 +13,11 @@ Changelog for the Windows Installer
   * primecount
   * tdlib
 
+* Improved support for installing additional optional packages.
+
 * Downgraded Cygwin version in order to fix an issue with running external
   Windows programs from Sage (in particular, this caused problems when
   running external LaTeX distributions (#42).
-
-* Improved support for installing additional optional packages.
 
 * Build system can now use a local Cygwin mirror; this can make for more
   consistent builds.
